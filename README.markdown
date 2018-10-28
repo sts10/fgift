@@ -19,4 +19,8 @@ Then either (a) change the included "test-names.csv" file to your extended famil
 
 Then run `cargo run` and see who's giving to who!
 
+## Notes about the csv input file
 
+Given the way I have the Rust code reading the csv, it will ignore the first line of the csv file. So just keep that as a generic title, like "Names".
+
+Generally I'd recommend creating and editing the csv files in a spreadsheet editor like Excel or LibreOffice Calc, rather than a text editor like Vim or Sublime Text.
