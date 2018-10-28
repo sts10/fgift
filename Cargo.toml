@@ -1,0 +1,8 @@
+[package]
+name = "beach_house_christmas_list_rust"
+version = "0.1.0"
+authors = ["Sam Schlinkert <sschlinkert@gmail.com>"]
+
+[dependencies]
+rand = "0.5"
+csv = "1"
