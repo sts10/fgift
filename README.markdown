@@ -4,11 +4,29 @@ Takes an input of a CSV file, describing an extended family, with each line an i
 
 ## Example CSV
 
+A CSV like this...
+
 ```csv
 Names,,,,
 Claire,Phil,Haley,Alex,Luke
 Cameron,Mitchell,Lily,,
 Jay,Gloria,Manny,,
+```
+
+Will give you an output like this:
+
+```
+Claire is giving to Manny
+Phil is giving to Jay
+Haley is giving to Cameron
+Alex is giving to Gloria
+Luke is giving to Lily
+Cameron is giving to Luke
+Mitchell is giving to Alex
+Lily is giving to Haley
+Jay is giving to Claire
+Gloria is giving to Mitchell
+Manny is giving to Phil
 ```
 
 ## How to use
