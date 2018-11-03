@@ -35,12 +35,12 @@ Manny is giving to Phil
 
 `test-names.csv` provides a template for this CSV input file-- basically each immediate family goes on its own line.
 
-You either edit that `test-names.csv` file OR create your own CSV file with your family's names.
+You can either edit that `test-names.csv` file and submit that file's path, OR create your own CSV file with your family's names.
 
-Once you're ready, run `cargo run`, enter the file location, and see who's giving to who!
+Once your CSV file is ready, run `cargo run`, enter the file location, and see who's giving to who!
 
 ## Notes about the CSV input file
 
 Given the way I have the Rust code reading the CSV, it will ignore the first line of the CSV file. So just keep that as a generic title, like "Names".
 
-Generally I'd recommend creating and editing the CSV files in a spreadsheet editor like Excel or LibreOffice Calc, rather than a text editor like Vim or Sublime Text.
+Generally I'd recommend creating and editing the CSV files in a spreadsheet editor like Microsoft Excel or [LibreOffice](https://www.libreoffice.org/) Calc, rather than a text editor like Vim or Sublime Text.
