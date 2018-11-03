@@ -1,8 +1,9 @@
 [package]
-name = "beach_house_christmas_list_rust"
-version = "0.1.0"
+name = "family_gift_list_maker"
+version = "0.1.1"
 authors = ["Sam Schlinkert <sschlinkert@gmail.com>"]
 
 [dependencies]
 rand = "0.5"
 csv = "1"
+# eyeoh = { git = "https://github.com/sts10/eyeoh" } 

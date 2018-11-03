@@ -1,7 +1,7 @@
 extern crate csv;
 extern crate rand;
-
 use std::fs::File;
+use std::io;
 
 use rand::prelude::*;
 
@@ -69,7 +69,10 @@ fn find_receiver_for(
 fn read_csv() -> Vec<Vec<String>> {
     let mut names: Vec<Vec<String>> = [].to_vec();
 
-    let file_path = "test-names.csv";
+    // let file_path = "test-names.csv";
+    println!("Enter the file path of the csv file");
+    let file_path = gets().unwrap();
+    let file_path = file_path.trim_matches(|c| c == '\'' || c == ' ');
 
     let file = File::open(file_path).unwrap();
     let mut rdr = csv::Reader::from_reader(file);
@@ -88,4 +91,12 @@ fn read_csv() -> Vec<Vec<String>> {
         names.push(family_vec_strings);
     }
     names
+}
+
+fn gets() -> io::Result<String> {
+    let mut input = String::new();
+    match io::stdin().read_line(&mut input) {
+        Ok(_n) => Ok(input.trim_end_matches("\n").to_string()),
+        Err(error) => Err(error),
+    }
 }

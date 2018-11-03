@@ -31,11 +31,13 @@ Manny is giving to Phil
 
 ## How to use
 
-[Install Rust](https://www.rust-lang.org/en-US/install.html). 
+[Install Rust](https://www.rust-lang.org/en-US/install.html). Clone down this directory, `cd` into it, then run `cargo run`. You'll be prompted to enter the file location of your CSV file.
 
-Then either (a) change the included `test-names.csv` file to your extended family OR (b) create your own CSV file and change any and all references to `test-names.csv` to your file name.
+`test-names.csv` provides a template for this CSV input file-- basically each immediate family goes on its own line.
 
-Then run `cargo run` and see who's giving to who!
+You either edit that `test-names.csv` file OR create your own CSV file with your family's names.
+
+Once you're ready, run `cargo run`, enter the file location, and see who's giving to who!
 
 ## Notes about the CSV input file
 
