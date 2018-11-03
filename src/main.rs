@@ -7,16 +7,16 @@ use rand::prelude::*;
 
 fn main() {
     let names: Vec<Vec<String>> = read_csv();
+    let names = sort_families(names);
     let mut receiving_vec: Vec<String> = [].to_vec();
-    let mut family_number = 0;
-    for family in &names {
+    for (family_number, family) in names.iter().enumerate() {
+        // family_number is a counter here... it's like an each_with_index
         for giver in family {
             match find_receiver_for(giver, family_number, &names, &receiving_vec) {
                 Some(name) => receiving_vec.push(name),
                 None => println!("Couldn't find solution. Please run program again."),
             }
         }
-        family_number += 1;
     }
 }
 
@@ -99,4 +99,10 @@ fn gets() -> io::Result<String> {
         Ok(_n) => Ok(input.trim_end_matches("\n").to_string()),
         Err(error) => Err(error),
     }
+}
+
+fn sort_families(mut names: Vec<Vec<String>>) -> Vec<Vec<String>> {
+    names.sort_by(|family1, family2| family1.len().cmp(&family2.len()));
+    names.reverse();
+    names
 }
