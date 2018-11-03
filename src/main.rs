@@ -8,16 +8,30 @@ use rand::prelude::*;
 fn main() {
     let names: Vec<Vec<String>> = read_csv();
     let names = sort_families(names);
+    // loop until we get a good solution
+    loop {
+        match find_gift_givers(&names) {
+            Some(_vec) => break,
+            None => {
+                println!("\nGot a bad solution\nGoing to try again\n");
+                continue;
+            }
+        };
+    }
+}
+
+fn find_gift_givers(names: &Vec<Vec<String>>) -> Option<Vec<String>> {
     let mut receiving_vec: Vec<String> = [].to_vec();
     for (family_number, family) in names.iter().enumerate() {
         // family_number is a counter here... it's like an each_with_index
         for giver in family {
             match find_receiver_for(giver, family_number, &names, &receiving_vec) {
                 Some(name) => receiving_vec.push(name),
-                None => println!("Couldn't find solution. Please run program again."),
+                None => return None, // println!("Couldn't find solution. Please run program again."),
             }
         }
     }
+    Some(receiving_vec)
 }
 
 fn find_receiver_for(
