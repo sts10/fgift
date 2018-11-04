@@ -1,5 +1,8 @@
 /target
+**/*.rs.bk
 names.csv
 names2.csv
 names*.csv
-**/*.rs.bk
+personal-data
+personal-data/
+personal-data/*

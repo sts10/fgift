@@ -1,16 +1,23 @@
 extern crate csv;
 extern crate rand;
+use rand::prelude::*;
 use std::fs::File;
 use std::io;
-
-use rand::prelude::*;
+use std::io::BufRead;
+use std::io::BufReader;
+use std::str::FromStr;
 
 fn main() {
     let names: Vec<Vec<String>> = read_csv();
     let names = sort_families(names);
+
+    let last_years_giving: Vec<String> =
+        read_by_line("/home/sschlinkert/code/family_gift_list_maker/last-year-giving-list.txt")
+            .unwrap();
+
     // loop until we get a good solution
     loop {
-        match find_gift_givers(&names) {
+        match find_gift_givers(&names, &last_years_giving) {
             Some(_vec) => break,
             None => {
                 println!("\nGot a bad solution\nGoing to try again\n");
@@ -20,12 +27,21 @@ fn main() {
     }
 }
 
-fn find_gift_givers(names: &Vec<Vec<String>>) -> Option<Vec<String>> {
+fn find_gift_givers(
+    names: &Vec<Vec<String>>,
+    last_years_giving: &Vec<String>,
+) -> Option<Vec<String>> {
     let mut receiving_vec: Vec<String> = [].to_vec();
     for (family_number, family) in names.iter().enumerate() {
         // family_number is a counter here... it's like an each_with_index
         for giver in family {
-            match find_receiver_for(giver, family_number, &names, &receiving_vec) {
+            match find_receiver_for(
+                giver,
+                family_number,
+                &names,
+                &receiving_vec,
+                last_years_giving,
+            ) {
                 Some(name) => receiving_vec.push(name),
                 None => return None, // println!("Couldn't find solution. Please run program again."),
             }
@@ -39,6 +55,7 @@ fn find_receiver_for(
     giver_family_number: usize,
     names: &Vec<Vec<String>>,
     receiving_vec: &Vec<String>,
+    last_years_giving: &Vec<String>,
 ) -> Option<String> {
     // find rand number between 1 and number_of_familes that is NOT `family_number`
     let mut rng = thread_rng();
@@ -68,6 +85,12 @@ fn find_receiver_for(
             || giver_family_number == potential_receiver_family_number
         {
             // go to the next iteration of the loop
+            continue;
+        } else if last_years_giving.contains(&format!(
+            "{} is giving to {}",
+            giver_name, potential_receiver_name
+        )) {
+            // This giver gave to this person in previous years. That's no fun!
             continue;
         } else {
             // if I'm here, I know I have got a good one. let's break out of the loop and push
@@ -107,6 +130,13 @@ fn read_csv() -> Vec<Vec<String>> {
     names
 }
 
+fn sort_families(mut names: Vec<Vec<String>>) -> Vec<Vec<String>> {
+    names.sort_by(|family1, family2| family1.len().cmp(&family2.len()));
+    names.reverse();
+    names
+}
+
+// helper functions (also in sts10/eyeoh)
 fn gets() -> io::Result<String> {
     let mut input = String::new();
     match io::stdin().read_line(&mut input) {
@@ -115,8 +145,21 @@ fn gets() -> io::Result<String> {
     }
 }
 
-fn sort_families(mut names: Vec<Vec<String>>) -> Vec<Vec<String>> {
-    names.sort_by(|family1, family2| family1.len().cmp(&family2.len()));
-    names.reverse();
-    names
+fn read_by_line<T: FromStr>(file_path: &str) -> io::Result<Vec<T>> {
+    let mut vec = Vec::new();
+    let f = match File::open(file_path.trim_matches(|c| c == '\'' || c == ' ')) {
+        Ok(res) => res,
+        Err(e) => return Err(e),
+    };
+    let file = BufReader::new(&f);
+    for line in file.lines() {
+        match line?.parse() {
+            Ok(l) => vec.push(l),
+            Err(_e) => {
+                eprintln!("Error");
+                continue;
+            }
+        }
+    }
+    Ok(vec)
 }
