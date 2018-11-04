@@ -126,7 +126,6 @@ fn read_csv(file_path: &str) -> Vec<Vec<String>> {
         // An error may occur, so abort the program in an unfriendly way.
         let record = result.expect("a CSV record");
         let mut family_vec_strings: Vec<String> = [].to_vec();
-        // let family_vec: Vec<&str> = record.iter().collect();
         for name in record.iter() {
             if name.len() > 1 {
                 family_vec_strings.push(name.to_string());
