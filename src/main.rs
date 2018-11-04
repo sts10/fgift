@@ -15,10 +15,14 @@ fn main() {
 
     println!("\nOptionally, enter file path for a text list of previous years' giving\n(Hit <enter> if you do not want to enter such a file)");
     let previous_years_file_path = get_file_path();
-    let mut previous_years_giving: Vec<String> = [].to_vec();
-    if previous_years_file_path != "" {
-        previous_years_giving = read_by_line(&previous_years_file_path).unwrap();
-    }
+    let previous_years_giving: Vec<String> = match previous_years_file_path.is_empty() {
+        true => [].to_vec(),
+        false => read_by_line(&previous_years_file_path).unwrap(),
+    };
+    // let mut previous_years_giving: Vec<String> = [].to_vec();
+    // if previous_years_file_path != "" {
+    //     previous_years_giving = read_by_line(&previous_years_file_path).unwrap();
+    // }
 
     println!("\n");
 
