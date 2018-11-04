@@ -19,11 +19,20 @@ fn main() {
     } else {
         read_by_line(&previous_years_file_path).unwrap()
     };
+
+    println!("\nOptionally, enter file path for a text list of special requests\n(Hit <enter> if you do not want to enter such a file)");
+    let special_requests_file_path = get_file_path();
+    let special_requests: Vec<String> = if special_requests_file_path.is_empty() {
+        [].to_vec()
+    } else {
+        read_by_line(&special_requests_file_path).unwrap()
+    };
+
     println!("\n");
 
     // loop until we get a good solution
     loop {
-        match find_gift_givers(&names, &previous_years_giving) {
+        match find_gift_givers(&names, &previous_years_giving, &special_requests) {
             Some(_vec) => break,
             None => {
                 println!("\n------------------");
@@ -39,8 +48,14 @@ fn main() {
 fn find_gift_givers(
     names: &[Vec<String>],            // this is like &Vec<Vec<String>>
     previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
+    special_requests: &[String],
 ) -> Option<Vec<String>> {
-    let mut receiving_vec: Vec<String> = [].to_vec();
+    let mut receiving_vec: Vec<String> = special_requests.to_vec();
+    println!(
+        "receiving_vec should have special_requests in it: {:?}",
+        receiving_vec
+    );
+
     for (family_number, family) in names.iter().enumerate() {
         // family_number is a counter here... it's like an each_with_index
         for giver in family {
