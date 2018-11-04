@@ -8,14 +8,18 @@ use std::io::BufReader;
 use std::str::FromStr;
 
 fn main() {
-    println!("Enter the file path of the CSV file with the family names");
+    println!("\nEnter the file path of the CSV file with the family names");
     let names_file_path = get_file_path();
     let names: Vec<Vec<String>> = read_csv(&names_file_path);
     let names = sort_families(names);
 
-    println!("Enter file path for a text list of previous years' giving");
+    println!("\nOptionally, enter file path for a text list of previous years' giving\n(Hit <enter> if you do not want to enter such a file)");
     let previous_years_file_path = get_file_path();
-    let previous_years_giving: Vec<String> = read_by_line(&previous_years_file_path).unwrap();
+    let previous_years_giving: Vec<String> = [].to_vec();
+    if previous_years_file_path != "" {
+        let previous_years_giving: Vec<String> = read_by_line(&previous_years_file_path).unwrap();
+    }
+    println!("\n");
 
     // loop until we get a good solution
     loop {
