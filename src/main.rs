@@ -5,7 +5,6 @@ use std::fs::File;
 use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
-// use std::str::FromStr;
 
 fn main() {
     println!("\nEnter the file path of the CSV file with the family names");
