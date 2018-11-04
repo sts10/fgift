@@ -5,7 +5,7 @@ use std::fs::File;
 use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
-use std::str::FromStr;
+// use std::str::FromStr;
 
 fn main() {
     println!("\nEnter the file path of the CSV file with the family names");
@@ -19,6 +19,8 @@ fn main() {
     if previous_years_file_path != "" {
         previous_years_giving = read_by_line(&previous_years_file_path).unwrap();
     }
+
+    println!("\n");
 
     // loop until we get a good solution
     loop {
@@ -160,14 +162,13 @@ fn read_by_line(file_path: &str) -> io::Result<Vec<String>> {
     };
     let file = BufReader::new(&f);
     for line in file.lines() {
-        vec.push(line.unwrap().trim().to_string());
-        // match Ok(line) {
-        //     Ok(l) => vec.push(l.trim()),
-        //     Err(_e) => {
-        //         eprintln!("Error");
-        //         continue;
-        //     }
-        // }
+        match line {
+            Ok(l) => vec.push(l.trim().to_string()),
+            Err(e) => {
+                eprintln!("Error reading a line in the {}: {}", file_path, e);
+                return Err(e);
+            }
+        }
     }
     Ok(vec)
 }
