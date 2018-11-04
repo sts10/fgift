@@ -8,16 +8,16 @@ use std::io::BufReader;
 use std::str::FromStr;
 
 fn main() {
-    let names: Vec<Vec<String>> = read_csv();
+    let names: Vec<Vec<String>> = prompt_for_and_read_csv();
     let names = sort_families(names);
 
-    let last_years_giving: Vec<String> =
-        read_by_line("/home/sschlinkert/code/family_gift_list_maker/last-year-giving-list.txt")
-            .unwrap();
+    println!("Enter file path for a text list of previous years' giving");
+    let previous_years_file_path = get_file_path();
+    let previous_years_giving: Vec<String> = read_by_line(&previous_years_file_path).unwrap();
 
     // loop until we get a good solution
     loop {
-        match find_gift_givers(&names, &last_years_giving) {
+        match find_gift_givers(&names, &previous_years_giving) {
             Some(_vec) => break,
             None => {
                 println!("\nGot a bad solution\nGoing to try again\n");
@@ -29,7 +29,7 @@ fn main() {
 
 fn find_gift_givers(
     names: &Vec<Vec<String>>,
-    last_years_giving: &Vec<String>,
+    previous_years_giving: &Vec<String>,
 ) -> Option<Vec<String>> {
     let mut receiving_vec: Vec<String> = [].to_vec();
     for (family_number, family) in names.iter().enumerate() {
@@ -40,7 +40,7 @@ fn find_gift_givers(
                 family_number,
                 &names,
                 &receiving_vec,
-                last_years_giving,
+                previous_years_giving,
             ) {
                 Some(name) => receiving_vec.push(name),
                 None => return None, // println!("Couldn't find solution. Please run program again."),
@@ -55,9 +55,8 @@ fn find_receiver_for(
     giver_family_number: usize,
     names: &Vec<Vec<String>>,
     receiving_vec: &Vec<String>,
-    last_years_giving: &Vec<String>,
+    previous_years_giving: &Vec<String>,
 ) -> Option<String> {
-    // find rand number between 1 and number_of_familes that is NOT `family_number`
     let mut rng = thread_rng();
     let mut potential_receiver_family_number;
     let mut potential_receiver_member_number;
@@ -86,7 +85,7 @@ fn find_receiver_for(
         {
             // go to the next iteration of the loop
             continue;
-        } else if last_years_giving.contains(&format!(
+        } else if previous_years_giving.contains(&format!(
             "{} is giving to {}",
             giver_name, potential_receiver_name
         )) {
@@ -103,7 +102,13 @@ fn find_receiver_for(
     Some(potential_receiver_name.to_string())
 }
 
-fn read_csv() -> Vec<Vec<String>> {
+fn get_file_path() -> String {
+    let file_path = gets().unwrap();
+    let file_path = file_path.trim_matches(|c| c == '\'' || c == ' ');
+    file_path.to_string()
+}
+
+fn prompt_for_and_read_csv() -> Vec<Vec<String>> {
     let mut names: Vec<Vec<String>> = [].to_vec();
 
     // let file_path = "test-names.csv";
