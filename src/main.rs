@@ -95,7 +95,7 @@ fn find_receiver_for(
             // go to the next iteration of the loop
             continue;
         } else if previous_years_giving.contains(&format!(
-            "{} is giving to {}",
+            "{} gives to {}",
             giver_name, potential_receiver_name
         )) {
             // This giver gave to this person in previous years. That's no fun!
@@ -106,7 +106,7 @@ fn find_receiver_for(
         }
     }
 
-    println!("{} is giving to {}", giver_name, potential_receiver_name);
+    println!("{} gives to {}", giver_name, potential_receiver_name);
 
     Some(potential_receiver_name.to_string())
 }
