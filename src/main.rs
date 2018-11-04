@@ -37,8 +37,8 @@ fn main() {
 }
 
 fn find_gift_givers(
-    names: &Vec<Vec<String>>,
-    previous_years_giving: &Vec<String>,
+    names: &[Vec<String>],            // this is like &Vec<Vec<String>>
+    previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
 ) -> Option<Vec<String>> {
     let mut receiving_vec: Vec<String> = [].to_vec();
     for (family_number, family) in names.iter().enumerate() {
@@ -62,13 +62,11 @@ fn find_gift_givers(
 fn find_receiver_for(
     giver_name: &str,
     giver_family_number: usize,
-    names: &Vec<Vec<String>>,
-    receiving_vec: &Vec<String>,
-    previous_years_giving: &Vec<String>,
+    names: &[Vec<String>],
+    receiving_vec: &[String],
+    previous_years_giving: &[String],
 ) -> Option<String> {
     let mut rng = thread_rng();
-    let mut potential_receiver_family_number;
-    let mut potential_receiver_member_number;
     let mut potential_receiver_name;
     let mut loop_counter = 0;
     loop {
@@ -78,8 +76,8 @@ fn find_receiver_for(
             return None;
         }
 
-        potential_receiver_family_number = rng.gen_range(0, names.len());
-        potential_receiver_member_number =
+        let potential_receiver_family_number = rng.gen_range(0, names.len());
+        let potential_receiver_member_number =
             rng.gen_range(0, names[potential_receiver_family_number].len());
         potential_receiver_name =
             &names[potential_receiver_family_number][potential_receiver_member_number];
@@ -88,17 +86,15 @@ fn find_receiver_for(
         //   - potential receiver is already receiving
         //   - potential receiver IS this giver
         //   - potential receiver is in this giver's family
+        //   - potential receiver has given to this person in previous years
         if receiving_vec.contains(&potential_receiver_name.to_string())
             || potential_receiver_name == giver_name
             || giver_family_number == potential_receiver_family_number
-        {
+            || previous_years_giving.contains(&format!(
+                "{} gives to {}",
+                giver_name, potential_receiver_name
+            )) {
             // go to the next iteration of the loop
-            continue;
-        } else if previous_years_giving.contains(&format!(
-            "{} gives to {}",
-            giver_name, potential_receiver_name
-        )) {
-            // println!("This giver gave to this person in previous years. That's no fun!");
             continue;
         } else {
             // if I'm here, I know I have got a good one. let's break out of the loop and push
