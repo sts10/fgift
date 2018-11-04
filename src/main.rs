@@ -19,10 +19,6 @@ fn main() {
         true => [].to_vec(),
         false => read_by_line(&previous_years_file_path).unwrap(),
     };
-    // let mut previous_years_giving: Vec<String> = [].to_vec();
-    // if previous_years_file_path != "" {
-    //     previous_years_giving = read_by_line(&previous_years_file_path).unwrap();
-    // }
 
     println!("\n");
 
