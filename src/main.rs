@@ -152,7 +152,7 @@ fn gets() -> io::Result<String> {
     }
 }
 
-fn read_by_line<T: FromStr>(file_path: &str) -> io::Result<Vec<T>> {
+fn read_by_line(file_path: &str) -> io::Result<Vec<String>> {
     let mut vec = Vec::new();
     let f = match File::open(file_path.trim_matches(|c| c == '\'' || c == ' ')) {
         Ok(res) => res,
@@ -160,13 +160,14 @@ fn read_by_line<T: FromStr>(file_path: &str) -> io::Result<Vec<T>> {
     };
     let file = BufReader::new(&f);
     for line in file.lines() {
-        match line?.parse() {
-            Ok(l) => vec.push(l),
-            Err(_e) => {
-                eprintln!("Error");
-                continue;
-            }
-        }
+        vec.push(line.unwrap().trim().to_string());
+        // match Ok(line) {
+        //     Ok(l) => vec.push(l.trim()),
+        //     Err(_e) => {
+        //         eprintln!("Error");
+        //         continue;
+        //     }
+        // }
     }
     Ok(vec)
 }
