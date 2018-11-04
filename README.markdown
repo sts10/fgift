@@ -16,17 +16,18 @@ Jay,Gloria,Manny,,
 Will give you an output like this:
 
 ```
-Claire is giving to Manny
-Phil is giving to Jay
-Haley is giving to Cameron
-Alex is giving to Gloria
-Luke is giving to Lily
-Cameron is giving to Luke
-Mitchell is giving to Alex
-Lily is giving to Haley
-Jay is giving to Claire
-Gloria is giving to Mitchell
-Manny is giving to Phil
+Claire gives to Cameron
+Phil gives to Mitchell
+Haley gives to Manny
+Alex gives to Jay
+Luke gives to Gloria
+Baby gives to Lily
+Jay gives to Haley
+Gloria gives to Alex
+Manny gives to Baby
+Cameron gives to Phil
+Mitchell gives to Luke
+Lily gives to Claire
 ```
 
 ## How to use
@@ -35,7 +36,7 @@ Manny is giving to Phil
 
 `test-names.csv` provides a template for this CSV input file-- basically each immediate family goes on its own line.
 
-You can either edit that `test-names.csv` file and submit that file's path, OR create your own CSV file with your family's names.
+Optionally, you can enter a text file listing who gave to who in previous years. This file should look just like the output text (i.e. "Claire gives to Cameron").
 
 Once your CSV file is ready, run `cargo run`, enter the file location, and see who's giving to who!
 
