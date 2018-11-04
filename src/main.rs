@@ -8,7 +8,9 @@ use std::io::BufReader;
 use std::str::FromStr;
 
 fn main() {
-    let names: Vec<Vec<String>> = prompt_for_and_read_csv();
+    println!("Enter the file path of the CSV file with the family names");
+    let names_file_path = get_file_path();
+    let names: Vec<Vec<String>> = read_csv(&names_file_path);
     let names = sort_families(names);
 
     println!("Enter file path for a text list of previous years' giving");
@@ -20,11 +22,14 @@ fn main() {
         match find_gift_givers(&names, &previous_years_giving) {
             Some(_vec) => break,
             None => {
-                println!("\nGot a bad solution\nGoing to try again\n");
+                println!("\n------------------");
+                println!("Got a bad solution\nGoing to try again");
+                println!("------------------\n");
                 continue;
             }
         };
     }
+    println!("\n------------------");
 }
 
 fn find_gift_givers(
@@ -108,13 +113,8 @@ fn get_file_path() -> String {
     file_path.to_string()
 }
 
-fn prompt_for_and_read_csv() -> Vec<Vec<String>> {
+fn read_csv(file_path: &str) -> Vec<Vec<String>> {
     let mut names: Vec<Vec<String>> = [].to_vec();
-
-    // let file_path = "test-names.csv";
-    println!("Enter the file path of the csv file");
-    let file_path = gets().unwrap();
-    let file_path = file_path.trim_matches(|c| c == '\'' || c == ' ');
 
     let file = File::open(file_path).unwrap();
     let mut rdr = csv::Reader::from_reader(file);
