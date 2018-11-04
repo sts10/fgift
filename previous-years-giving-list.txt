@@ -1,0 +1,48 @@
+Claire is giving to Manny
+Phil is giving to Jay
+Haley is giving to Cameron
+Alex is giving to Gloria
+Luke is giving to Lily
+Cameron is giving to Luke
+Mitchell is giving to Alex
+Lily is giving to Haley
+Jay is giving to Claire
+Gloria is giving to Mitchell
+Manny is giving to Phil
+
+Claire is giving to Cameron
+Phil is giving to Manny
+Haley is giving to Jay
+Alex is giving to Lily
+Luke is giving to Mitchell
+Jay is giving to Luke
+Gloria is giving to Phil
+Manny is giving to Haley
+Cameron is giving to Claire
+Mitchell is giving to Gloria
+Lily is giving to Alex
+
+
+Claire is giving to Lily
+Phil is giving to Cameron
+Haley is giving to Gloria
+Alex is giving to Jay
+Luke is giving to Manny
+Jay is giving to Mitchell
+Gloria is giving to Alex
+Manny is giving to Claire
+Cameron is giving to Haley
+Mitchell is giving to Luke
+Lily is giving to Phil
+
+Claire is giving to Jay
+Phil is giving to Mitchell
+Haley is giving to Lily
+Alex is giving to Cameron
+Luke is giving to Gloria
+Jay is giving to Haley
+Gloria is giving to Claire
+Manny is giving to Alex
+Cameron is giving to Phil
+Mitchell is giving to Manny
+Lily is giving to Luke
