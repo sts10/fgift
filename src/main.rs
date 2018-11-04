@@ -15,11 +15,10 @@ fn main() {
 
     println!("\nOptionally, enter file path for a text list of previous years' giving\n(Hit <enter> if you do not want to enter such a file)");
     let previous_years_file_path = get_file_path();
-    let previous_years_giving: Vec<String> = [].to_vec();
+    let mut previous_years_giving: Vec<String> = [].to_vec();
     if previous_years_file_path != "" {
-        let previous_years_giving: Vec<String> = read_by_line(&previous_years_file_path).unwrap();
+        previous_years_giving = read_by_line(&previous_years_file_path).unwrap();
     }
-    println!("\n");
 
     // loop until we get a good solution
     loop {
@@ -98,7 +97,7 @@ fn find_receiver_for(
             "{} gives to {}",
             giver_name, potential_receiver_name
         )) {
-            // This giver gave to this person in previous years. That's no fun!
+            // println!("This giver gave to this person in previous years. That's no fun!");
             continue;
         } else {
             // if I'm here, I know I have got a good one. let's break out of the loop and push
@@ -172,3 +171,13 @@ fn read_by_line<T: FromStr>(file_path: &str) -> io::Result<Vec<T>> {
     }
     Ok(vec)
 }
+
+// an idea for a test
+//
+// println!("Read file as {:?}", previous_years_giving);
+// println!("\n");
+// let g = "Claire";
+// let r = "Cameron";
+// if previous_years_giving.contains(&format!("{} gives to {}", g, r)) {
+//     println!("Tripped the easy test");
+// }
