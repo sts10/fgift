@@ -61,7 +61,7 @@ fn find_gift_givers(
             // Check the special_requests vec to see if this giver has a special request
             for request in special_requests {
                 // need to find receiver's name here
-                let request_vec: Vec<&str> = request.split(" ").collect();
+                let request_vec: Vec<&str> = request.split(' ').collect();
                 if request_vec[0] == giver {
                     receiving_vec.push(request_vec[3].to_string());
                     println!("{}", request);
@@ -71,7 +71,7 @@ fn find_gift_givers(
             }
             // if we're here, we didn't find a special request of who they should give to,
             // so we need to find a receiver for them
-            if found_a_receiver == false {
+            if !found_a_receiver {
                 match find_receiver_for(
                     giver,
                     family_number,
