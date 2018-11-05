@@ -43,6 +43,7 @@ fn main() {
         };
     }
     println!("\n------------------");
+    println!("Done!");
 }
 
 fn find_gift_givers(
