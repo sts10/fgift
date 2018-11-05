@@ -56,13 +56,13 @@ fn find_gift_givers(
     for (family_number, family) in names.iter().enumerate() {
         // family_number is a counter here... it's like an each_with_index
 
-        for giver in family {
+        for giver_name in family {
             let mut found_a_receiver = false;
             // Check the special_requests vec to see if this giver has a special request
             for request in special_requests {
                 // need to find receiver's name here
                 let request_vec: Vec<&str> = request.split(' ').collect();
-                if request_vec[0] == giver {
+                if request_vec[0] == giver_name {
                     receiving_vec.push(request_vec[3].to_string());
                     println!("{}", request);
                     found_a_receiver = true;
@@ -73,7 +73,7 @@ fn find_gift_givers(
             // so we need to find a receiver for them
             if !found_a_receiver {
                 match find_receiver_for(
-                    giver,
+                    giver_name,
                     family_number,
                     &names,
                     &receiving_vec,
