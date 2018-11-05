@@ -50,24 +50,37 @@ fn find_gift_givers(
     previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
     special_requests: &[String],
 ) -> Option<Vec<String>> {
-    let mut receiving_vec: Vec<String> = special_requests.to_vec();
-    println!(
-        "receiving_vec should have special_requests in it: {:?}",
-        receiving_vec
-    );
+    let mut receiving_vec: Vec<String> = [].to_vec();
 
     for (family_number, family) in names.iter().enumerate() {
         // family_number is a counter here... it's like an each_with_index
+
         for giver in family {
-            match find_receiver_for(
-                giver,
-                family_number,
-                &names,
-                &receiving_vec,
-                previous_years_giving,
-            ) {
-                Some(name) => receiving_vec.push(name),
-                None => return None, // println!("Couldn't find solution. Please run program again."),
+            let mut found_a_receiver = false;
+            // Check the special_requests vec to see if this giver has a special request
+            for request in special_requests {
+                // need to find receiver's name here
+                let request_vec: Vec<&str> = request.split(" ").collect();
+                if request_vec[0] == giver {
+                    receiving_vec.push(request_vec[3].to_string());
+                    println!("{}", request);
+                    found_a_receiver = true;
+                    break;
+                }
+            }
+            // if we're here, we didn't find a special request of who they should give to,
+            // so we need to find a receiver for them
+            if found_a_receiver == false {
+                match find_receiver_for(
+                    giver,
+                    family_number,
+                    &names,
+                    &receiving_vec,
+                    previous_years_giving,
+                ) {
+                    Some(name) => receiving_vec.push(name),
+                    None => return None, // println!("Couldn't find solution. Please run program again."),
+                }
             }
         }
     }
