@@ -27,7 +27,9 @@ fn main() {
     // loop until we get a good solution
     loop {
         match find_gift_givers(&names, &previous_years_giving, &special_requests) {
-            Some(pairs) => {
+            Some(mut pairs) => {
+                // sort list alphabetically to cover evidence of special requests
+                pairs.sort();
                 for pair in pairs {
                     println!("{} gives to {}", pair.0, pair.1);
                 }
