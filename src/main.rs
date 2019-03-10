@@ -27,7 +27,12 @@ fn main() {
     // loop until we get a good solution
     loop {
         match find_gift_givers(&names, &previous_years_giving, &special_requests) {
-            Some(_vec) => break,
+            Some(pairs) => {
+                for pair in pairs {
+                    println!("{} gives to {}", pair.0, pair.1);
+                }
+                break;
+            }
             None => {
                 println!("\n------------------");
                 println!("Got a bad solution\nGoing to try again");

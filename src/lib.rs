@@ -5,12 +5,14 @@ use std::fs::File;
 use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
-pub fn find_gift_givers(
-    names: &[Vec<String>],            // this is like &Vec<Vec<String>>
+
+pub fn find_gift_givers<'a>(
+    names: &'a [Vec<String>],         // this is like &Vec<Vec<String>>
     previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
     special_requests: &[String],
-) -> Option<Vec<String>> {
+) -> Option<Vec<(&'a str, String)>> {
     let mut receiving_vec: Vec<String> = [].to_vec();
+    let mut pairs: Vec<(&str, String)> = [].to_vec();
 
     for (family_number, family) in names.iter().enumerate() {
         // family_number is a counter here... it's like an each_with_index
@@ -23,7 +25,8 @@ pub fn find_gift_givers(
                 let request_vec: Vec<&str> = request.split(' ').collect();
                 if request_vec[0] == giver_name {
                     receiving_vec.push(request_vec[3].to_string());
-                    println!("{}", request);
+                    pairs.push((giver_name, request_vec[3].to_string()));
+                    // println!("{}", request);
                     found_a_receiver = true;
                     break;
                 }
@@ -38,13 +41,16 @@ pub fn find_gift_givers(
                     &receiving_vec,
                     previous_years_giving,
                 ) {
-                    Some(name) => receiving_vec.push(name),
+                    Some(name) => {
+                        receiving_vec.push(name.clone());
+                        pairs.push((giver_name, name));
+                    }
                     None => return None, // println!("Couldn't find solution. Please run program again."),
                 }
             }
         }
     }
-    Some(receiving_vec)
+    Some(pairs)
 }
 
 fn find_receiver_for(
@@ -91,8 +97,7 @@ fn find_receiver_for(
         }
     }
 
-    println!("{} gives to {}", giver_name, potential_receiver_name);
-
+    // println!("{} gives to {}", giver_name, potential_receiver_name);
     Some(potential_receiver_name.to_string())
 }
 
