@@ -12,41 +12,44 @@ pub fn find_gift_givers<'a>(
     special_requests: &[String],
 ) -> Option<Vec<(String, String)>> {
     let mut receiving_vec: Vec<String> = [].to_vec();
+    let mut givers_vec: Vec<String> = [].to_vec();
     let mut pairs: Vec<(String, String)> = [].to_vec();
+
+    // first, handle special requests
+    for request in special_requests {
+        // need to find receiver's name here
+
+        let request_vec: Vec<&str> = request.split(' ').collect();
+        println!("Found a special request");
+        givers_vec.push(request_vec[0].to_string());
+        receiving_vec.push(request_vec[3].to_string());
+        pairs.push((request_vec[0].to_string(), request_vec[3].to_string()));
+    }
+    println!("done with special requests");
 
     for (family_number, family) in names.iter().enumerate() {
         // family_number is a counter here... it's like an each_with_index
 
         for giver_name in family {
-            let mut found_a_receiver = false;
             // Check the special_requests vec to see if this giver has a special request
-            for request in special_requests {
-                // need to find receiver's name here
-                let request_vec: Vec<&str> = request.split(' ').collect();
-                if request_vec[0] == giver_name {
-                    receiving_vec.push(request_vec[3].to_string());
-                    pairs.push((giver_name.to_string(), request_vec[3].to_string()));
-                    // println!("{}", request);
-                    found_a_receiver = true;
-                    break;
-                }
+            if givers_vec.contains(giver_name) {
+                continue;
             }
             // if we're here, we didn't find a special request of who they should give to,
             // so we need to find a receiver for them
-            if !found_a_receiver {
-                match find_receiver_for(
-                    giver_name,
-                    family_number,
-                    &names,
-                    &receiving_vec,
-                    previous_years_giving,
-                ) {
-                    Some(name) => {
-                        receiving_vec.push(name.clone());
-                        pairs.push((giver_name.clone(), name));
-                    }
-                    None => return None, // println!("Couldn't find solution. Please run program again."),
+
+            match find_receiver_for(
+                giver_name,
+                family_number,
+                &names,
+                &receiving_vec,
+                previous_years_giving,
+            ) {
+                Some(name) => {
+                    receiving_vec.push(name.clone());
+                    pairs.push((giver_name.clone(), name));
                 }
+                None => return None, // println!("Couldn't find solution. Please run program again."),
             }
         }
     }
@@ -81,7 +84,8 @@ fn find_receiver_for(
         //   - potential receiver IS this giver
         //   - potential receiver is in this giver's family
         //   - potential receiver has given to this person in previous years
-        if receiving_vec.contains(&potential_receiver_name.to_string())
+        //
+        if receiving_vec.contains(potential_receiver_name)
             || potential_receiver_name == giver_name
             || giver_family_number == potential_receiver_family_number
             || previous_years_giving.contains(&format!(
@@ -205,6 +209,58 @@ mod integration_tests {
         assert_eq!(pairs[0].0, "Claire");
     }
 
+    #[test]
+    fn can_fulfill_special_request() {
+        let pairs = make_a_list();
+        assert_eq!(pairs[0].0, "Claire");
+        assert_eq!(pairs[0].1, "Jay");
+
+        assert_eq!(pairs[1].0, "Alex");
+        assert_eq!(pairs[1].1, "Gloria");
+
+        assert_eq!(pairs[2].0, "Haley");
+        assert_eq!(pairs[2].1, "Manny");
+    }
+    use std::collections::HashSet;
+    use std::hash::Hash;
+    fn has_unique_elements<T>(iter: T) -> bool
+    where
+        T: IntoIterator,
+        T::Item: Eq + Hash,
+    {
+        let mut uniq = HashSet::new();
+        iter.into_iter().all(move |x| uniq.insert(x))
+    }
+
+    fn get_givers_vec(pairs: Vec<(String, String)>) -> Vec<String> {
+        let mut givers = vec![];
+        for pair in pairs {
+            givers.push(pair.0);
+        }
+        givers
+    }
+
+    #[test]
+    fn no_repeat_givers() {
+        let pairs = make_a_list();
+        let givers = get_givers_vec(pairs);
+        assert!(has_unique_elements(givers));
+    }
+
+    fn get_receivers_vec(pairs: Vec<(String, String)>) -> Vec<String> {
+        let mut receivers = vec![];
+        for pair in pairs {
+            receivers.push(pair.1);
+        }
+        receivers
+    }
+
+    #[test]
+    fn no_repeat_receivers() {
+        let pairs = make_a_list();
+        let receivers = get_receivers_vec(pairs);
+        assert!(has_unique_elements(receivers));
+    }
 }
 // an idea for a test
 //
