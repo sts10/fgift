@@ -211,15 +211,17 @@ mod integration_tests {
 
     #[test]
     fn can_fulfill_special_request() {
-        let pairs = make_a_list();
-        assert_eq!(pairs[0].0, "Claire");
-        assert_eq!(pairs[0].1, "Jay");
+        for _x in 0..100 {
+            let pairs = make_a_list();
+            assert_eq!(pairs[0].0, "Claire");
+            assert_eq!(pairs[0].1, "Jay");
 
-        assert_eq!(pairs[1].0, "Alex");
-        assert_eq!(pairs[1].1, "Gloria");
+            assert_eq!(pairs[1].0, "Alex");
+            assert_eq!(pairs[1].1, "Gloria");
 
-        assert_eq!(pairs[2].0, "Haley");
-        assert_eq!(pairs[2].1, "Manny");
+            assert_eq!(pairs[2].0, "Haley");
+            assert_eq!(pairs[2].1, "Manny");
+        }
     }
     use std::collections::HashSet;
     use std::hash::Hash;
@@ -242,9 +244,11 @@ mod integration_tests {
 
     #[test]
     fn no_repeat_givers() {
-        let pairs = make_a_list();
-        let givers = get_givers_vec(pairs);
-        assert!(has_unique_elements(givers));
+        for _x in 0..100 {
+            let pairs = make_a_list();
+            let givers = get_givers_vec(pairs);
+            assert!(has_unique_elements(givers));
+        }
     }
 
     fn get_receivers_vec(pairs: Vec<(String, String)>) -> Vec<String> {
@@ -257,17 +261,15 @@ mod integration_tests {
 
     #[test]
     fn no_repeat_receivers() {
-        let pairs = make_a_list();
-        let receivers = get_receivers_vec(pairs);
-        assert!(has_unique_elements(receivers));
+        for _x in 0..100 {
+            let pairs = make_a_list();
+            let receivers = get_receivers_vec(pairs);
+            assert!(has_unique_elements(receivers));
+        }
     }
+
+    // Other test ideas
+    // 1. Check that no previous year pairs are assigned
+    // 2. Check that no one gets someone in their own family
+    // 3. Somehow check for randomness or 10,000 executions
 }
-// an idea for a test
-//
-// println!("Read file as {:?}", previous_years_giving);
-// println!("\n");
-// let g = "Claire";
-// let r = "Cameron";
-// if previous_years_giving.contains(&format!("{} gives to {}", g, r)) {
-//     println!("Tripped the easy test");
-// }
