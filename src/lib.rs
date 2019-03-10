@@ -142,7 +142,7 @@ pub fn sort_families(mut names: Vec<Vec<String>>) -> Vec<Vec<String>> {
 pub fn gets() -> io::Result<String> {
     let mut input = String::new();
     match io::stdin().read_line(&mut input) {
-        Ok(_n) => Ok(input.trim_end_matches("\n").to_string()),
+        Ok(_n) => Ok(input.trim_end_matches('\n').to_string()),
         Err(error) => Err(error),
     }
 }
@@ -171,7 +171,6 @@ mod integration_tests {
     use super::*;
 
     fn make_a_list() -> Vec<(String, String)> {
-        // println!("\nEnter the file path of the CSV file with the family names");
         let names_file_path = "test-files/test-names.csv";
         let names: Vec<Vec<String>> = read_csv(&names_file_path);
         let names = sort_families(names);
@@ -211,7 +210,7 @@ mod integration_tests {
 
     #[test]
     fn can_fulfill_special_request() {
-        for _x in 0..100 {
+        for _ in 0..1000 {
             let pairs = make_a_list();
             assert_eq!(pairs[0].0, "Claire");
             assert_eq!(pairs[0].1, "Jay");
@@ -244,7 +243,7 @@ mod integration_tests {
 
     #[test]
     fn no_repeat_givers() {
-        for _x in 0..100 {
+        for _ in 0..1000 {
             let pairs = make_a_list();
             let givers = get_givers_vec(pairs);
             assert!(has_unique_elements(givers));
@@ -261,7 +260,7 @@ mod integration_tests {
 
     #[test]
     fn no_repeat_receivers() {
-        for _x in 0..100 {
+        for _ in 0..1000 {
             let pairs = make_a_list();
             let receivers = get_receivers_vec(pairs);
             assert!(has_unique_elements(receivers));
