@@ -10,9 +10,9 @@ pub fn find_gift_givers<'a>(
     names: &'a [Vec<String>],         // this is like &Vec<Vec<String>>
     previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
     special_requests: &[String],
-) -> Option<Vec<(&'a str, String)>> {
+) -> Option<Vec<(String, String)>> {
     let mut receiving_vec: Vec<String> = [].to_vec();
-    let mut pairs: Vec<(&str, String)> = [].to_vec();
+    let mut pairs: Vec<(String, String)> = [].to_vec();
 
     for (family_number, family) in names.iter().enumerate() {
         // family_number is a counter here... it's like an each_with_index
@@ -25,7 +25,7 @@ pub fn find_gift_givers<'a>(
                 let request_vec: Vec<&str> = request.split(' ').collect();
                 if request_vec[0] == giver_name {
                     receiving_vec.push(request_vec[3].to_string());
-                    pairs.push((giver_name, request_vec[3].to_string()));
+                    pairs.push((giver_name.to_string(), request_vec[3].to_string()));
                     // println!("{}", request);
                     found_a_receiver = true;
                     break;
@@ -43,7 +43,7 @@ pub fn find_gift_givers<'a>(
                 ) {
                     Some(name) => {
                         receiving_vec.push(name.clone());
-                        pairs.push((giver_name, name));
+                        pairs.push((giver_name.clone(), name));
                     }
                     None => return None, // println!("Couldn't find solution. Please run program again."),
                 }
@@ -162,6 +162,50 @@ pub fn read_by_line(file_path: &str) -> io::Result<Vec<String>> {
     Ok(vec)
 }
 
+#[cfg(test)]
+mod integration_tests {
+    use super::*;
+
+    fn make_a_list() -> Vec<(String, String)> {
+        // println!("\nEnter the file path of the CSV file with the family names");
+        let names_file_path = "test-files/test-names.csv";
+        let names: Vec<Vec<String>> = read_csv(&names_file_path);
+        let names = sort_families(names);
+
+        let previous_years_file_path = "test-files/previous-years-giving-list-test.txt";
+        let previous_years_giving: Vec<String> = if previous_years_file_path.is_empty() {
+            [].to_vec()
+        } else {
+            read_by_line(&previous_years_file_path).unwrap()
+        };
+
+        let special_requests_file_path = "test-files/special-requests-test.txt";
+        let special_requests: Vec<String> = if special_requests_file_path.is_empty() {
+            [].to_vec()
+        } else {
+            read_by_line(&special_requests_file_path).unwrap()
+        };
+
+        // loop until we get a good solution
+        loop {
+            match find_gift_givers(&names, &previous_years_giving, &special_requests) {
+                Some(pairs) => {
+                    return pairs;
+                }
+                None => {
+                    continue;
+                }
+            };
+        }
+    }
+
+    #[test]
+    fn claire_gives() {
+        let pairs = make_a_list();
+        assert_eq!(pairs[0].0, "Claire");
+    }
+
+}
 // an idea for a test
 //
 // println!("Read file as {:?}", previous_years_giving);
