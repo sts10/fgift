@@ -138,6 +138,18 @@ pub fn sort_families(mut names: Vec<Vec<String>>) -> Vec<Vec<String>> {
     names
 }
 
+pub fn shuffle_families(families: Vec<Vec<String>>) -> Vec<Vec<String>> {
+    let mut shuffled_families: Vec<Vec<String>> = vec![];
+    let mut rng = thread_rng();
+
+    for mut family in families {
+        rng.shuffle(&mut family);
+        shuffled_families.push(family);
+    }
+    rng.shuffle(&mut shuffled_families);
+    shuffled_families
+}
+
 // helper functions (also in sts10/eyeoh)
 pub fn gets() -> io::Result<String> {
     let mut input = String::new();
@@ -173,7 +185,7 @@ mod integration_tests {
     fn make_a_list() -> Vec<(String, String)> {
         let names_file_path = "test-files/test-names.csv";
         let names: Vec<Vec<String>> = read_csv(&names_file_path);
-        let names = sort_families(names);
+        let names = shuffle_families(names);
 
         let previous_years_file_path = "test-files/previous-years-giving-list-test.txt";
         let previous_years_giving: Vec<String> = if previous_years_file_path.is_empty() {
@@ -264,6 +276,26 @@ mod integration_tests {
             let pairs = make_a_list();
             let receivers = get_receivers_vec(pairs);
             assert!(has_unique_elements(receivers));
+        }
+    }
+
+    #[test]
+    fn sufficiently_random() {
+        for _ in 0..1000 {
+            let pairs = make_a_list();
+            let mut pair_one_count: f64 = 0 as f64;
+            let mut pair_two_count: f64 = 0 as f64;
+            if pairs.contains(&("Phil".to_string(), "Cameron".to_string())) {
+                pair_one_count = pair_one_count + 1.0;
+            }
+
+            if pairs.contains(&("Manny".to_string(), "Claire".to_string())) {
+                pair_two_count = pair_two_count + 1.0;
+            }
+            assert!(
+                pair_one_count <= pair_two_count * 1.0005
+                    || pair_one_count >= pair_two_count * 1.0005
+            );
         }
     }
 

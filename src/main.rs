@@ -4,7 +4,7 @@ fn main() {
     println!("\nEnter the file path of the CSV file with the family names");
     let names_file_path = get_file_path();
     let names: Vec<Vec<String>> = read_csv(&names_file_path);
-    let names = sort_families(names);
+    let names = shuffle_families(names);
 
     println!("\nOptionally, enter file path for a text list of previous years' giving\n(Hit <enter> if you do not want to enter such a file)");
     let previous_years_file_path = get_file_path();

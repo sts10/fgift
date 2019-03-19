@@ -1,16 +1,15 @@
 2017
-Claire gives to Cameron
-Phil gives to Mitchell
-Haley gives to Manny
 Alex gives to Jay
+Cameron gives to Manny
+Claire gives to Mitchell
+Gloria gives to Phil
+Haley gives to Cameron
+Jay gives to Luke
+Lily gives to Alex
 Luke gives to Gloria
-Baby gives to Lily
-Jay gives to Haley
-Gloria gives to Alex
-Manny gives to Baby
-Cameron gives to Phil
-Mitchell gives to Luke
-Lily gives to Claire
+Manny gives to Haley
+Mitchell gives to Claire
+Phil gives to Lily
 
 2016
 Claire gives to Jay
