@@ -20,12 +20,10 @@ pub fn find_gift_givers<'a>(
         // need to find receiver's name here
 
         let request_vec: Vec<&str> = request.split(' ').collect();
-        println!("Found a special request");
         givers_vec.push(request_vec[0].to_string());
         receiving_vec.push(request_vec[3].to_string());
         pairs.push((request_vec[0].to_string(), request_vec[3].to_string()));
     }
-    println!("done with special requests");
 
     for (family_number, family) in names.iter().enumerate() {
         // family_number is a counter here... it's like an each_with_index
@@ -280,7 +278,7 @@ mod integration_tests {
     }
 
     #[test]
-    fn sufficiently_random() {
+    fn sufficiently_random_basic_test() {
         for _ in 0..1000 {
             let pairs = make_a_list();
             let mut pair_one_count: f64 = 0 as f64;
@@ -297,6 +295,44 @@ mod integration_tests {
                     || pair_one_count >= pair_two_count * 1.0005
             );
         }
+    }
+
+    fn chi_test_single_pair(
+        pair_to_check: (String, String),
+        expected_count: f64,
+        upper_tail_critical: f64,
+    ) -> bool {
+        // make counts Vec
+        let mut counts: Vec<f64> = vec![];
+        for _n in 0..1000 {
+            let pairs = make_a_list();
+            let mut this_run_this_pair_count: f64 = 0.0;
+            if pairs.contains(&pair_to_check) {
+                this_run_this_pair_count = this_run_this_pair_count + 1.0;
+            }
+            counts.push(this_run_this_pair_count);
+        }
+        // calculate chi sum
+        let mut sum: f64 = 0.0;
+        for count in counts {
+            sum = sum
+                + ((count as f64 - expected_count) * (count as f64 - expected_count))
+                    / expected_count;
+        }
+        println!("Sum is {}", sum);
+        sum < upper_tail_critical
+    }
+
+    #[test]
+    fn is_within_chi_limit_for_arbitrary_pair() {
+        assert_eq!(
+            chi_test_single_pair(
+                ("Phil".to_string(), "Cameron".to_string()),
+                (1000 / 4) as f64,
+                1106.969
+            ),
+            true
+        )
     }
 
     // Other test ideas
