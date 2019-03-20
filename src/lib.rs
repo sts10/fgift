@@ -1,6 +1,7 @@
 extern crate csv;
 extern crate rand;
 use rand::prelude::*;
+// use std::collections::hash_map::HashMap;
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
@@ -297,44 +298,112 @@ mod integration_tests {
         }
     }
 
-    fn chi_test_single_pair(
-        pair_to_check: (String, String),
-        expected_count: f64,
-        upper_tail_critical: f64,
-    ) -> bool {
-        // make counts Vec
-        let mut counts: Vec<f64> = vec![];
-        for _n in 0..1000 {
-            let pairs = make_a_list();
-            let mut this_run_this_pair_count: f64 = 0.0;
-            if pairs.contains(&pair_to_check) {
-                this_run_this_pair_count = this_run_this_pair_count + 1.0;
+    fn make_a_list_no_requests_or_previous_years() -> Vec<(String, String)> {
+        let names_file_path = "test-files/test-names.csv";
+        let names: Vec<Vec<String>> = read_csv(&names_file_path);
+        let names = shuffle_families(names);
+
+        let previous_years_file_path = "";
+        let previous_years_giving: Vec<String> = if previous_years_file_path.is_empty() {
+            [].to_vec()
+        } else {
+            read_by_line(&previous_years_file_path).unwrap()
+        };
+
+        let special_requests_file_path = "";
+        let special_requests: Vec<String> = if special_requests_file_path.is_empty() {
+            [].to_vec()
+        } else {
+            read_by_line(&special_requests_file_path).unwrap()
+        };
+
+        // loop until we get a good solution
+        loop {
+            match find_gift_givers(&names, &previous_years_giving, &special_requests) {
+                Some(pairs) => {
+                    return pairs;
+                }
+                None => {
+                    continue;
+                }
+            };
+        }
+    }
+    fn look_up_number_of_potential_receivers(giver_name: &str) -> usize {
+        // hard code this I think?!
+        if giver_name == "Claire".to_string() {
+            6
+        } else if giver_name == "Manny".to_string() {
+            8
+        } else if giver_name == "Phil".to_string() {
+            6
+        } else {
+            0
+        }
+
+        // match giver_name {
+        //     ("Claire".to_string()) => 7,
+        //     "Manny".to_string() => 5,
+        // }
+    }
+
+    use std::collections::HashMap;
+    fn individual_giver_chi_test(giver_name: String, upper_tail_critical: f64) -> bool {
+        // run 1000 trials to get a Vector of observed values
+
+        let mut observed_receivers_hashmap: HashMap<String, usize> = HashMap::new();
+
+        for _ in 0..1001 {
+            let pairs = make_a_list_no_requests_or_previous_years();
+            for pair in pairs {
+                if pair.0 == giver_name {
+                    observed_receivers_hashmap
+                        .entry(pair.1)
+                        .and_modify(|count| *count += 1)
+                        .or_insert(1);
+                }
             }
-            counts.push(this_run_this_pair_count);
         }
-        // calculate chi sum
-        let mut sum: f64 = 0.0;
-        for count in counts {
-            sum = sum
-                + ((count as f64 - expected_count) * (count as f64 - expected_count))
-                    / expected_count;
+        // this won't find cases where Claire _never_ gives to a legitimate receiver... _probably_ not a huge deal
+
+        // convert the Hashmap to a Vector to make it easier to iterate through
+        let observed_receivers_vec: Vec<(&String, &usize)> =
+            observed_receivers_hashmap.iter().collect();
+
+        // now calculate the chi-squared statistic
+        let mut chi_squared_statistic: f64 = 0.0;
+        for (_n, observed_receiver_name_and_count) in observed_receivers_vec.iter().enumerate() {
+            let _receiver_name = observed_receiver_name_and_count.0;
+            let observed_count = observed_receiver_name_and_count.1;
+
+            let expected_count: f64 =
+                1000.0 / (look_up_number_of_potential_receivers(&giver_name) as f64);
+
+            chi_squared_statistic = chi_squared_statistic
+                + (*observed_count as f64 - expected_count as f64).powf(2.0)
+                    / expected_count as f64;
         }
-        println!("Sum is {}", sum);
-        sum < upper_tail_critical
+
+        println!("Found a chi squared of {}", chi_squared_statistic);
+
+        chi_squared_statistic < upper_tail_critical
+    }
+
+    // https://en.wikibooks.org/wiki/Engineering_Tables/Chi-Squared_Distibution
+    #[test]
+    fn chi_squared_test_claire() {
+        assert!(individual_giver_chi_test("Claire".to_string(), 888.564) == true)
     }
 
     #[test]
-    fn is_within_chi_limit_for_arbitrary_pair() {
-        assert_eq!(
-            chi_test_single_pair(
-                ("Phil".to_string(), "Cameron".to_string()),
-                (1000 / 4) as f64,
-                1106.969
-            ),
-            true
-        )
+    fn chi_squared_test_phil() {
+        assert!(individual_giver_chi_test("Phil".to_string(), 888.564) == true)
     }
 
+    #[test]
+    fn chi_squared_test_manny() {
+        assert!(individual_giver_chi_test("Manny".to_string(), 888.564) == true)
+    }
     // Other test ideas
     // 1. Check that no previous year pairs are assigned
     // 2. Check that no one gets someone in their own family
