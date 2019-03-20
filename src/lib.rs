@@ -333,10 +333,12 @@ mod integration_tests {
         // hard code this I think?!
         if giver_name == "Claire".to_string() {
             6
-        } else if giver_name == "Manny".to_string() {
-            8
         } else if giver_name == "Phil".to_string() {
             6
+        } else if giver_name == "Cameron".to_string() {
+            8
+        } else if giver_name == "Manny".to_string() {
+            8
         } else {
             0
         }
@@ -353,7 +355,7 @@ mod integration_tests {
 
         let mut observed_receivers_hashmap: HashMap<String, usize> = HashMap::new();
 
-        for _ in 0..1001 {
+        for _ in 0..1000 {
             let pairs = make_a_list_no_requests_or_previous_years();
             for pair in pairs {
                 if pair.0 == giver_name {
@@ -372,19 +374,28 @@ mod integration_tests {
 
         // now calculate the chi-squared statistic
         let mut chi_squared_statistic: f64 = 0.0;
+        println!("For {}... ", giver_name);
         for (_n, observed_receiver_name_and_count) in observed_receivers_vec.iter().enumerate() {
-            let _receiver_name = observed_receiver_name_and_count.0;
+            let receiver_name = observed_receiver_name_and_count.0;
             let observed_count = observed_receiver_name_and_count.1;
 
             let expected_count: f64 =
                 1000.0 / (look_up_number_of_potential_receivers(&giver_name) as f64);
+
+            println!(
+                "We expected {} to give to {} {} times out of 1000; Observed: {} times out of 1000",
+                giver_name, receiver_name, expected_count, observed_count
+            );
 
             chi_squared_statistic = chi_squared_statistic
                 + (*observed_count as f64 - expected_count as f64).powf(2.0)
                     / expected_count as f64;
         }
 
-        println!("Found a chi squared of {}", chi_squared_statistic);
+        println!(
+            "For {}, found a chi squared of {}",
+            giver_name, chi_squared_statistic
+        );
 
         chi_squared_statistic < upper_tail_critical
     }
@@ -392,17 +403,22 @@ mod integration_tests {
     // https://en.wikibooks.org/wiki/Engineering_Tables/Chi-Squared_Distibution
     #[test]
     fn chi_squared_test_claire() {
-        assert!(individual_giver_chi_test("Claire".to_string(), 888.564) == true)
+        assert!(individual_giver_chi_test("Claire".to_string(), 11.070))
     }
 
     #[test]
     fn chi_squared_test_phil() {
-        assert!(individual_giver_chi_test("Phil".to_string(), 888.564) == true)
+        assert!(individual_giver_chi_test("Phil".to_string(), 11.070))
+    }
+
+    #[test]
+    fn chi_squared_test_cameron() {
+        assert!(individual_giver_chi_test("Cameron".to_string(), 14.067))
     }
 
     #[test]
     fn chi_squared_test_manny() {
-        assert!(individual_giver_chi_test("Manny".to_string(), 888.564) == true)
+        assert!(individual_giver_chi_test("Manny".to_string(), 14.067))
     }
     // Other test ideas
     // 1. Check that no previous year pairs are assigned
