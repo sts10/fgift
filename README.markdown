@@ -56,11 +56,45 @@ Generally I'd recommend creating and editing the CSV files in a spreadsheet edit
 
 Are the results of this program truly random? Or in other words, is it somehow bias in choosing who gives to whom? At first I thought, yes, sure, but after watching [this video](https://www.youtube.com/watch?v=5kC5k5QBqcc) I'm not so sure.
 
-## Testing for bias
+## Testing for bias: A statistic problem
 
 To see if the program indeed had such a bias, I decided to try to write a series of tests in which I aim to perform a [Pearson chi-squared test](https://en.wikipedia.org/wiki/Pearson%27s_chi-squared_test). The tests and their associated helper function are currently in `src/lib.rs` (the first one is called `chi_squared_test_claire`). Note that I am not a statistician and relied mostly on my decades-old AP Stats knowledge in making this choice... so if you have a better idea of how to test for this bias please leave and issue! 
 
-As the code stands, the tests pass when testing "givers" in the _largest_ family (Claire and Phil are examples, but **fail** for givers in the smaller families (Cameron and Manny are the two I test currently). I can't figure out how to get these two tests to pass.
+As the code stands, the tests pass when testing "givers" in the _largest_ family (Claire and Phil are examples, but **fail** for givers in the smaller families (Cameron and Manny are the two I test currently). Here's  the printed output for the failed Cameron test:
+
+```text
+---- integration_tests::chi_squared_test_cameron stdout ----
+For Cameron... 
+We expected Cameron to give to Haley 125 times out of 1000; Observed: 145 times out of 1000
+We expected Cameron to give to Manny 125 times out of 1000; Observed: 52 times out of 1000
+We expected Cameron to give to Phil 125 times out of 1000; Observed: 156 times out of 1000
+We expected Cameron to give to Jay 125 times out of 1000; Observed: 61 times out of 1000
+We expected Cameron to give to Alex 125 times out of 1000; Observed: 172 times out of 1000
+We expected Cameron to give to Luke 125 times out of 1000; Observed: 181 times out of 1000
+We expected Cameron to give to Gloria 125 times out of 1000; Observed: 55 times out of 1000
+We expected Cameron to give to Claire 125 times out of 1000; Observed: 178 times out of 1000
+For Cameron, found a chi squared of 190.72
+```
+
+As you can see, Cameron is assigned receivers in the large family of 5 (Haley, Phil, Alex, Luke, and Claire) more often than the other, smaller family of three (Manny, Jay, and Gloria). This happens even when the inputed family list is shuffled by family and within each family (see `fn shuffle_families` in `src/lib.rs`).
+
+Here's the printout for the failed Manny test:
+
+```text
+---- integration_tests::chi_squared_test_manny stdout ----
+For Manny... 
+We expected Manny to give to Luke 125 times out of 1000; Observed: 170 times out of 1000
+We expected Manny to give to Lily 125 times out of 1000; Observed: 56 times out of 1000
+We expected Manny to give to Haley 125 times out of 1000; Observed: 149 times out of 1000
+We expected Manny to give to Claire 125 times out of 1000; Observed: 166 times out of 1000
+We expected Manny to give to Phil 125 times out of 1000; Observed: 176 times out of 1000
+We expected Manny to give to Cameron 125 times out of 1000; Observed: 61 times out of 1000
+We expected Manny to give to Alex 125 times out of 1000; Observed: 144 times out of 1000
+We expected Manny to give to Mitchell 125 times out of 1000; Observed: 78 times out of 1000
+For Manny, found a chi squared of 146.48
+```
+
+I can't figure out how to get these two tests to pass.
 
 ## Attempts to pass my bias tests
 
