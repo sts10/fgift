@@ -56,4 +56,20 @@ Generally I'd recommend creating and editing the CSV files in a spreadsheet edit
 
 Are the results of this program truly random? Or in other words, is it somehow bias in choosing who gives to whom? At first I thought, yes, sure, but after watching [this video](https://www.youtube.com/watch?v=5kC5k5QBqcc) I'm not so sure.
 
-For example, maybe the program should do a full restart whenever a "bad" choice (i.e. picks herself, picks someone in her family, or someone she has given to in the past) is made randomly. That way, when we finally get a "good" run-through, we're more assured that every selection was freely random. 
+## Testing for bias
+
+To see if the program indeed had such a bias, I decided to try to write a series of tests in which I aim to perform a [Pearson chi-squared test](https://en.wikipedia.org/wiki/Pearson%27s_chi-squared_test). The tests and their associated helper function are currently in `src/lib.rs` (the first one is called `chi_squared_test_claire`). Note that I am not a statistician and relied mostly on my decades-old AP Stats knowledge in making this choice... so if you have a better idea of how to test for this bias please leave and issue! 
+
+As the code stands, the tests pass when testing "givers" in the _largest_ family (Claire and Phil are examples, but **fail** for givers in the smaller families (Cameron and Manny are the two I test currently). I can't figure out how to get these two tests to pass.
+
+## Attempts to pass my bias tests
+
+In an effort to make these two tests pass (as written), I had the code shuffle both the order of families and the order of names within the families for each trial (see: `fn shuffle_families` in `src/lib.rs`). I also tried assigning receivers to the two small families first and _then_ assigning members of the large family. Neither made the tests pass. 
+
+Given that one of the requirements of the system is that you cannot be assigned to give to a member of your own immediate family (and that nuclear families will almost certainly be of different sizes), I'm not sure if it's even possible to make the chi-squared tests pass as I've written them. 
+
+That said... 
+
+### Other ideas for passing my bias tests that I haven't tried
+
+One idea, though: the program should do a full restart whenever a "bad" choice (i.e. picks herself, picks someone in her family, or someone she has given to in the past) is made randomly. That way, when we finally get a "good" run-through, we're more assured that every selection was freely random. 
