@@ -8,7 +8,7 @@ use std::io::BufRead;
 use std::io::BufReader;
 
 pub fn find_gift_givers<'a>(
-    names: Vec<(String, usize)>,      // this is like &Vec<Vec<String>>
+    names: &[(String, usize)],        // this is like &Vec<Vec<String>>
     previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
     special_requests: &[String],
 ) -> Option<Vec<(String, String)>> {
@@ -26,7 +26,7 @@ pub fn find_gift_givers<'a>(
         pairs.push((request_vec[0].to_string(), request_vec[3].to_string()));
     }
 
-    for giver in &names {
+    for giver in names {
         if givers_vec.contains(&giver.0) {
             continue;
         }
@@ -53,7 +53,9 @@ pub fn find_gift_givers<'a>(
 fn find_receiver_for(
     giver_name: &str,
     giver_family_number: usize,
-    names: &Vec<(String, usize)>,
+    // names: &Vec<(String, usize)>,
+    names: &[(String, usize)],
+
     receiving_vec: &[String],
     previous_years_giving: &[String],
 ) -> Option<String> {
@@ -69,7 +71,7 @@ fn find_receiver_for(
         }
 
         let names_length = names.len();
-        potential_receiver = names[rng.gen_range(0, names_length)];
+        potential_receiver = names[rng.gen_range(0, names_length)].clone();
 
         // What makes a bad receiver?
         //   - potential receiver is already receiving
@@ -188,7 +190,7 @@ mod integration_tests {
     fn make_a_list() -> Vec<(String, String)> {
         let names_file_path = "test-files/test-names.csv";
         let names: Vec<Vec<String>> = read_csv(&names_file_path);
-        let names = shuffle_families(names);
+        let names = flatten_and_shuffle(names);
 
         let previous_years_file_path = "test-files/previous-years-giving-list-test.txt";
         let previous_years_giving: Vec<String> = if previous_years_file_path.is_empty() {
