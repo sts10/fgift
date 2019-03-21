@@ -18,8 +18,6 @@ pub fn find_gift_givers<'a>(
 
     // first, handle special requests
     for request in special_requests {
-        // need to find receiver's name here
-
         let request_vec: Vec<&str> = request.split(' ').collect();
         givers_vec.push(request_vec[0].to_string());
         receiving_vec.push(request_vec[3].to_string());
@@ -124,24 +122,6 @@ pub fn read_csv(file_path: &str) -> Vec<Vec<String>> {
     names
 }
 
-pub fn sort_families(mut names: Vec<Vec<String>>) -> Vec<Vec<String>> {
-    names.sort_by(|family1, family2| family1.len().cmp(&family2.len()));
-    names.reverse();
-    names
-}
-
-pub fn shuffle_families(families: Vec<Vec<String>>) -> Vec<Vec<String>> {
-    let mut shuffled_families: Vec<Vec<String>> = vec![];
-    let mut rng = thread_rng();
-
-    for mut family in families {
-        rng.shuffle(&mut family);
-        shuffled_families.push(family);
-    }
-    rng.shuffle(&mut shuffled_families);
-    shuffled_families
-}
-
 pub fn flatten_and_shuffle(families: Vec<Vec<String>>) -> Vec<(String, usize)> {
     let mut rng = thread_rng();
     let mut flat_names: Vec<(String, usize)> = vec![];
@@ -187,19 +167,20 @@ pub fn read_by_line(file_path: &str) -> io::Result<Vec<String>> {
 mod integration_tests {
     use super::*;
 
-    fn make_a_list() -> Vec<(String, String)> {
-        let names_file_path = "test-files/test-names.csv";
-        let names: Vec<Vec<String>> = read_csv(&names_file_path);
+    fn make_a_list(
+        names_file_path: &str,
+        previous_years_file_path: &str, // and this is like &Vec<String> , but it's a slice I guess
+        special_requests_file_path: &str,
+    ) -> Vec<(String, String)> {
+        let names: Vec<Vec<String>> = read_csv(names_file_path);
         let names = flatten_and_shuffle(names);
 
-        let previous_years_file_path = "test-files/previous-years-giving-list-test.txt";
         let previous_years_giving: Vec<String> = if previous_years_file_path.is_empty() {
             [].to_vec()
         } else {
             read_by_line(&previous_years_file_path).unwrap()
         };
 
-        let special_requests_file_path = "test-files/special-requests-test.txt";
         let special_requests: Vec<String> = if special_requests_file_path.is_empty() {
             [].to_vec()
         } else {
@@ -221,14 +202,22 @@ mod integration_tests {
 
     #[test]
     fn claire_gives() {
-        let assignment_pairs = make_a_list();
+        let assignment_pairs = make_a_list(
+            "./test-files/test-names.csv",
+            "./test-files/previous-years-giving-list-test.txt",
+            "./test-files/special-requests-test.txt",
+        );
         assert_eq!(assignment_pairs[0].0, "Claire");
     }
 
     #[test]
     fn can_fulfill_special_request() {
         for _ in 0..1000 {
-            let assignment_pairs = make_a_list();
+            let assignment_pairs = make_a_list(
+                "test-files/test-names.csv",
+                "test-files/previous-years-giving-list-test.txt",
+                "test-files/special-requests-test.txt",
+            );
             assert_eq!(assignment_pairs[0].0, "Claire");
             assert_eq!(assignment_pairs[0].1, "Jay");
 
@@ -261,7 +250,11 @@ mod integration_tests {
     #[test]
     fn no_repeat_givers() {
         for _ in 0..1000 {
-            let assignment_pairs = make_a_list();
+            let assignment_pairs = make_a_list(
+                "test-files/test-names.csv",
+                "test-files/previous-years-giving-list-test.txt",
+                "test-files/special-requests-test.txt",
+            );
             let givers = get_givers_vec(assignment_pairs);
             assert!(has_unique_elements(givers));
         }
@@ -278,7 +271,11 @@ mod integration_tests {
     #[test]
     fn no_repeat_receivers() {
         for _ in 0..1000 {
-            let assignment_pairs = make_a_list();
+            let assignment_pairs = make_a_list(
+                "test-files/test-names.csv",
+                "test-files/previous-years-giving-list-test.txt",
+                "test-files/special-requests-test.txt",
+            );
             let receivers = get_receivers_vec(assignment_pairs);
             assert!(has_unique_elements(receivers));
         }
@@ -287,7 +284,11 @@ mod integration_tests {
     #[test]
     fn sufficiently_random_basic_test() {
         for _ in 0..1000 {
-            let assignment_pairs = make_a_list();
+            let assignment_pairs = make_a_list(
+                "test-files/test-names.csv",
+                "test-files/previous-years-giving-list-test.txt",
+                "test-files/special-requests-test.txt",
+            );
             let mut pair_one_count: f64 = 0 as f64;
             let mut pair_two_count: f64 = 0 as f64;
             if assignment_pairs.contains(&("Phil".to_string(), "Cameron".to_string())) {
@@ -304,37 +305,6 @@ mod integration_tests {
         }
     }
 
-    fn make_a_list_no_requests_or_previous_years() -> Vec<(String, String)> {
-        let names_file_path = "test-files/test-names.csv";
-        let names: Vec<Vec<String>> = read_csv(&names_file_path);
-        let names = flatten_and_shuffle(names);
-
-        let previous_years_file_path = "";
-        let previous_years_giving: Vec<String> = if previous_years_file_path.is_empty() {
-            [].to_vec()
-        } else {
-            read_by_line(&previous_years_file_path).unwrap()
-        };
-
-        let special_requests_file_path = "";
-        let special_requests: Vec<String> = if special_requests_file_path.is_empty() {
-            [].to_vec()
-        } else {
-            read_by_line(&special_requests_file_path).unwrap()
-        };
-
-        // loop until we get a good solution
-        loop {
-            match find_gift_givers(&names, &previous_years_giving, &special_requests) {
-                Some(assignment_pairs) => {
-                    return assignment_pairs;
-                }
-                None => {
-                    continue;
-                }
-            };
-        }
-    }
     fn look_up_number_of_potential_receivers(giver_name: &str) -> usize {
         // hard code this I think?!
         if giver_name == "Claire".to_string() {
@@ -362,7 +332,7 @@ mod integration_tests {
         let mut observed_receivers_hashmap: HashMap<String, usize> = HashMap::new();
 
         for _ in 0..1000 {
-            let assignment_pairs = make_a_list_no_requests_or_previous_years();
+            let assignment_pairs = make_a_list("test-files/test-names.csv", "", "");
             for pair in assignment_pairs {
                 if pair.0 == giver_name {
                     observed_receivers_hashmap
