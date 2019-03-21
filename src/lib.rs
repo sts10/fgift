@@ -8,7 +8,7 @@ use std::io::BufRead;
 use std::io::BufReader;
 
 pub fn find_gift_givers<'a>(
-    names: &'a [Vec<String>],         // this is like &Vec<Vec<String>>
+    names: Vec<(String, usize)>,      // this is like &Vec<Vec<String>>
     previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
     special_requests: &[String],
 ) -> Option<Vec<(String, String)>> {
@@ -26,30 +26,25 @@ pub fn find_gift_givers<'a>(
         pairs.push((request_vec[0].to_string(), request_vec[3].to_string()));
     }
 
-    for (family_number, family) in names.iter().enumerate() {
-        // family_number is a counter here... it's like an each_with_index
+    for giver in &names {
+        if givers_vec.contains(&giver.0) {
+            continue;
+        }
+        // if we're here, we didn't find a special request of who they should give to,
+        // so we need to find a receiver for them
 
-        for giver_name in family {
-            // Check the special_requests vec to see if this giver has a special request
-            if givers_vec.contains(giver_name) {
-                continue;
+        match find_receiver_for(
+            &giver.0,
+            giver.1,
+            &names,
+            &receiving_vec,
+            previous_years_giving,
+        ) {
+            Some(name) => {
+                receiving_vec.push(name.clone());
+                pairs.push((giver.0.clone(), name));
             }
-            // if we're here, we didn't find a special request of who they should give to,
-            // so we need to find a receiver for them
-
-            match find_receiver_for(
-                giver_name,
-                family_number,
-                &names,
-                &receiving_vec,
-                previous_years_giving,
-            ) {
-                Some(name) => {
-                    receiving_vec.push(name.clone());
-                    pairs.push((giver_name.clone(), name));
-                }
-                None => return None, // println!("Couldn't find solution. Please run program again."),
-            }
+            None => return None, // println!("Couldn't find solution. Please run program again."),
         }
     }
     Some(pairs)
@@ -58,20 +53,13 @@ pub fn find_gift_givers<'a>(
 fn find_receiver_for(
     giver_name: &str,
     giver_family_number: usize,
-    names: &[Vec<String>],
+    names: &Vec<(String, usize)>,
     receiving_vec: &[String],
     previous_years_giving: &[String],
 ) -> Option<String> {
     let mut rng = thread_rng();
-    let mut potential_receiver_name: String;
+    let mut potential_receiver: (String, usize);
     let mut loop_counter = 0;
-
-    let mut flat_names: Vec<String> = vec![];
-    for family in names {
-        for name in family {
-            flat_names.push(name.to_string());
-        }
-    }
 
     loop {
         loop_counter += 1;
@@ -80,16 +68,8 @@ fn find_receiver_for(
             return None;
         }
 
-        potential_receiver_name = flat_names[rng.gen_range(0, flat_names.len())].to_string();
-
-        // find this potential_receiver_name's family number, for checking later on
-        let mut potential_receiver_family_number = 0;
-        for (i, family) in names.iter().enumerate() {
-            if family.contains(&potential_receiver_name) {
-                potential_receiver_family_number = i;
-                break;
-            }
-        }
+        let names_length = names.len();
+        potential_receiver = names[rng.gen_range(0, names_length)];
 
         // What makes a bad receiver?
         //   - potential receiver is already receiving
@@ -97,13 +77,11 @@ fn find_receiver_for(
         //   - potential receiver is in this giver's family
         //   - potential receiver has given to this person in previous years
 
-        if receiving_vec.contains(&potential_receiver_name)
-            || potential_receiver_name == giver_name
-            || giver_family_number == potential_receiver_family_number
-            || previous_years_giving.contains(&format!(
-                "{} gives to {}",
-                giver_name, potential_receiver_name
-            ))
+        if receiving_vec.contains(&potential_receiver.0)
+            || potential_receiver.0 == giver_name
+            || giver_family_number == potential_receiver.1
+            || previous_years_giving
+                .contains(&format!("{} gives to {}", giver_name, potential_receiver.0))
         {
             // go to the next iteration of the loop and find a new potential_receiver
             continue;
@@ -114,7 +92,7 @@ fn find_receiver_for(
         }
     }
 
-    Some(potential_receiver_name)
+    Some(potential_receiver.0)
 }
 
 pub fn get_file_path() -> String {
@@ -160,6 +138,19 @@ pub fn shuffle_families(families: Vec<Vec<String>>) -> Vec<Vec<String>> {
     }
     rng.shuffle(&mut shuffled_families);
     shuffled_families
+}
+
+pub fn flatten_and_shuffle(families: Vec<Vec<String>>) -> Vec<(String, usize)> {
+    let mut rng = thread_rng();
+    let mut flat_names: Vec<(String, usize)> = vec![];
+
+    for (number, family) in families.iter().enumerate() {
+        for name in family {
+            flat_names.push((name.to_string(), number));
+        }
+    }
+    rng.shuffle(&mut flat_names);
+    flat_names
 }
 
 // helper functions (also in sts10/eyeoh)
@@ -314,7 +305,7 @@ mod integration_tests {
     fn make_a_list_no_requests_or_previous_years() -> Vec<(String, String)> {
         let names_file_path = "test-files/test-names.csv";
         let names: Vec<Vec<String>> = read_csv(&names_file_path);
-        let names = shuffle_families(names);
+        let names = flatten_and_shuffle(names);
 
         let previous_years_file_path = "";
         let previous_years_giving: Vec<String> = if previous_years_file_path.is_empty() {
