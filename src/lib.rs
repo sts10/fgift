@@ -63,8 +63,16 @@ fn find_receiver_for(
     previous_years_giving: &[String],
 ) -> Option<String> {
     let mut rng = thread_rng();
-    let mut potential_receiver_name;
+    let mut potential_receiver_name: String;
     let mut loop_counter = 0;
+
+    let mut flat_names: Vec<String> = vec![];
+    for family in names {
+        for name in family {
+            flat_names.push(name.to_string());
+        }
+    }
+
     loop {
         loop_counter += 1;
         if loop_counter > 1000 {
@@ -72,19 +80,24 @@ fn find_receiver_for(
             return None;
         }
 
-        let potential_receiver_family_number = rng.gen_range(0, names.len());
-        let potential_receiver_member_number =
-            rng.gen_range(0, names[potential_receiver_family_number].len());
-        potential_receiver_name =
-            &names[potential_receiver_family_number][potential_receiver_member_number];
+        potential_receiver_name = flat_names[rng.gen_range(0, flat_names.len())].to_string();
 
-        // what makes a bad receiver?
+        // find this potential_receiver_name's family number, for checking later on
+        let mut potential_receiver_family_number = 0;
+        for (i, family) in names.iter().enumerate() {
+            if family.contains(&potential_receiver_name) {
+                potential_receiver_family_number = i;
+                break;
+            }
+        }
+
+        // What makes a bad receiver?
         //   - potential receiver is already receiving
         //   - potential receiver IS this giver
         //   - potential receiver is in this giver's family
         //   - potential receiver has given to this person in previous years
-        //
-        if receiving_vec.contains(potential_receiver_name)
+
+        if receiving_vec.contains(&potential_receiver_name)
             || potential_receiver_name == giver_name
             || giver_family_number == potential_receiver_family_number
             || previous_years_giving.contains(&format!(
@@ -92,16 +105,16 @@ fn find_receiver_for(
                 giver_name, potential_receiver_name
             ))
         {
-            // go to the next iteration of the loop
+            // go to the next iteration of the loop and find a new potential_receiver
             continue;
         } else {
-            // if I'm here, I know I have got a good one. let's break out of the loop and push
+            // if I'm here, I know I have got a valid receiver for this giver. let's break out of the loop and return
+            // the receiver's name!
             break;
         }
     }
 
-    // println!("{} gives to {}", giver_name, potential_receiver_name);
-    Some(potential_receiver_name.to_string())
+    Some(potential_receiver_name)
 }
 
 pub fn get_file_path() -> String {
