@@ -14,7 +14,7 @@ pub fn find_gift_givers<'a>(
 ) -> Option<Vec<(String, String)>> {
     let mut receiving_vec: Vec<String> = [].to_vec();
     let mut givers_vec: Vec<String> = [].to_vec();
-    let mut pairs: Vec<(String, String)> = [].to_vec();
+    let mut assignment_pairs: Vec<(String, String)> = [].to_vec();
 
     // first, handle special requests
     for request in special_requests {
@@ -23,7 +23,7 @@ pub fn find_gift_givers<'a>(
         let request_vec: Vec<&str> = request.split(' ').collect();
         givers_vec.push(request_vec[0].to_string());
         receiving_vec.push(request_vec[3].to_string());
-        pairs.push((request_vec[0].to_string(), request_vec[3].to_string()));
+        assignment_pairs.push((request_vec[0].to_string(), request_vec[3].to_string()));
     }
 
     for giver in names {
@@ -42,12 +42,12 @@ pub fn find_gift_givers<'a>(
         ) {
             Some(name) => {
                 receiving_vec.push(name.clone());
-                pairs.push((giver.0.clone(), name));
+                assignment_pairs.push((giver.0.clone(), name));
             }
             None => return None, // println!("Couldn't find solution. Please run program again."),
         }
     }
-    Some(pairs)
+    Some(assignment_pairs)
 }
 
 fn find_receiver_for(
@@ -209,8 +209,8 @@ mod integration_tests {
         // loop until we get a good solution
         loop {
             match find_gift_givers(&names, &previous_years_giving, &special_requests) {
-                Some(pairs) => {
-                    return pairs;
+                Some(assignment_pairs) => {
+                    return assignment_pairs;
                 }
                 None => {
                     continue;
@@ -221,22 +221,22 @@ mod integration_tests {
 
     #[test]
     fn claire_gives() {
-        let pairs = make_a_list();
-        assert_eq!(pairs[0].0, "Claire");
+        let assignment_pairs = make_a_list();
+        assert_eq!(assignment_pairs[0].0, "Claire");
     }
 
     #[test]
     fn can_fulfill_special_request() {
         for _ in 0..1000 {
-            let pairs = make_a_list();
-            assert_eq!(pairs[0].0, "Claire");
-            assert_eq!(pairs[0].1, "Jay");
+            let assignment_pairs = make_a_list();
+            assert_eq!(assignment_pairs[0].0, "Claire");
+            assert_eq!(assignment_pairs[0].1, "Jay");
 
-            assert_eq!(pairs[1].0, "Alex");
-            assert_eq!(pairs[1].1, "Gloria");
+            assert_eq!(assignment_pairs[1].0, "Alex");
+            assert_eq!(assignment_pairs[1].1, "Gloria");
 
-            assert_eq!(pairs[2].0, "Haley");
-            assert_eq!(pairs[2].1, "Manny");
+            assert_eq!(assignment_pairs[2].0, "Haley");
+            assert_eq!(assignment_pairs[2].1, "Manny");
         }
     }
     use std::collections::HashSet;
@@ -250,9 +250,9 @@ mod integration_tests {
         iter.into_iter().all(move |x| uniq.insert(x))
     }
 
-    fn get_givers_vec(pairs: Vec<(String, String)>) -> Vec<String> {
+    fn get_givers_vec(assignment_pairs: Vec<(String, String)>) -> Vec<String> {
         let mut givers = vec![];
-        for pair in pairs {
+        for pair in assignment_pairs {
             givers.push(pair.0);
         }
         givers
@@ -261,15 +261,15 @@ mod integration_tests {
     #[test]
     fn no_repeat_givers() {
         for _ in 0..1000 {
-            let pairs = make_a_list();
-            let givers = get_givers_vec(pairs);
+            let assignment_pairs = make_a_list();
+            let givers = get_givers_vec(assignment_pairs);
             assert!(has_unique_elements(givers));
         }
     }
 
-    fn get_receivers_vec(pairs: Vec<(String, String)>) -> Vec<String> {
+    fn get_receivers_vec(assignment_pairs: Vec<(String, String)>) -> Vec<String> {
         let mut receivers = vec![];
-        for pair in pairs {
+        for pair in assignment_pairs {
             receivers.push(pair.1);
         }
         receivers
@@ -278,8 +278,8 @@ mod integration_tests {
     #[test]
     fn no_repeat_receivers() {
         for _ in 0..1000 {
-            let pairs = make_a_list();
-            let receivers = get_receivers_vec(pairs);
+            let assignment_pairs = make_a_list();
+            let receivers = get_receivers_vec(assignment_pairs);
             assert!(has_unique_elements(receivers));
         }
     }
@@ -287,14 +287,14 @@ mod integration_tests {
     #[test]
     fn sufficiently_random_basic_test() {
         for _ in 0..1000 {
-            let pairs = make_a_list();
+            let assignment_pairs = make_a_list();
             let mut pair_one_count: f64 = 0 as f64;
             let mut pair_two_count: f64 = 0 as f64;
-            if pairs.contains(&("Phil".to_string(), "Cameron".to_string())) {
+            if assignment_pairs.contains(&("Phil".to_string(), "Cameron".to_string())) {
                 pair_one_count = pair_one_count + 1.0;
             }
 
-            if pairs.contains(&("Manny".to_string(), "Claire".to_string())) {
+            if assignment_pairs.contains(&("Manny".to_string(), "Claire".to_string())) {
                 pair_two_count = pair_two_count + 1.0;
             }
             assert!(
@@ -326,8 +326,8 @@ mod integration_tests {
         // loop until we get a good solution
         loop {
             match find_gift_givers(&names, &previous_years_giving, &special_requests) {
-                Some(pairs) => {
-                    return pairs;
+                Some(assignment_pairs) => {
+                    return assignment_pairs;
                 }
                 None => {
                     continue;
@@ -362,8 +362,8 @@ mod integration_tests {
         let mut observed_receivers_hashmap: HashMap<String, usize> = HashMap::new();
 
         for _ in 0..1000 {
-            let pairs = make_a_list_no_requests_or_previous_years();
-            for pair in pairs {
+            let assignment_pairs = make_a_list_no_requests_or_previous_years();
+            for pair in assignment_pairs {
                 if pair.0 == giver_name {
                     observed_receivers_hashmap
                         .entry(pair.1)
@@ -427,7 +427,7 @@ mod integration_tests {
         assert!(individual_giver_chi_test("Manny".to_string(), 14.067))
     }
     // Other test ideas
-    // 1. Check that no previous year pairs are assigned
+    // 1. Check that no previous year assignment_pairs are assigned
     // 2. Check that no one gets someone in their own family
     // 3. Somehow check for randomness or 10,000 executions
 }
