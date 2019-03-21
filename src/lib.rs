@@ -7,40 +7,67 @@ use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
 
-pub fn find_gift_givers<'a>(
-    names: &[(String, usize)],        // this is like &Vec<Vec<String>>
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Person {
+    pub name: String,
+    family_number: Option<usize>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Assignment {
+    pub giver: Person,
+    pub receiver: Person,
+}
+
+pub fn find_gift_givers(
+    names: &[Person],                 // this is like &Vec<Vec<String>>
     previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
     special_requests: &[String],
-) -> Option<Vec<(String, String)>> {
+) -> Option<Vec<Assignment>> {
     let mut receiving_vec: Vec<String> = [].to_vec();
     let mut givers_vec: Vec<String> = [].to_vec();
-    let mut assignment_pairs: Vec<(String, String)> = [].to_vec();
+    let mut assignment_pairs: Vec<Assignment> = [].to_vec();
 
     // first, handle special requests
     for request in special_requests {
         let request_vec: Vec<&str> = request.split(' ').collect();
         givers_vec.push(request_vec[0].to_string());
         receiving_vec.push(request_vec[3].to_string());
-        assignment_pairs.push((request_vec[0].to_string(), request_vec[3].to_string()));
+        let giver = Person {
+            name: request_vec[0].to_string(),
+            family_number: None,
+        };
+        let receiver = Person {
+            name: request_vec[3].to_string(),
+            family_number: None,
+        };
+        assignment_pairs.push(Assignment {
+            giver: giver,
+            receiver: receiver,
+        });
     }
 
     for giver in names {
-        if givers_vec.contains(&giver.0) {
+        if givers_vec.contains(&giver.name) {
             continue;
         }
         // if we're here, we didn't find a special request of who they should give to,
         // so we need to find a receiver for them
 
         match find_receiver_for(
-            &giver.0,
-            giver.1,
+            giver,
+            // &giver.name,
+            // giver.family_number,
             &names,
             &receiving_vec,
             previous_years_giving,
         ) {
-            Some(name) => {
-                receiving_vec.push(name.clone());
-                assignment_pairs.push((giver.0.clone(), name));
+            Some(receiver) => {
+                receiving_vec.push(receiver.name.clone());
+                assignment_pairs.push(Assignment {
+                    giver: giver.clone(),
+                    receiver: receiver,
+                });
             }
             None => return None, // println!("Couldn't find solution. Please run program again."),
         }
@@ -49,16 +76,16 @@ pub fn find_gift_givers<'a>(
 }
 
 fn find_receiver_for(
-    giver_name: &str,
-    giver_family_number: usize,
-    // names: &Vec<(String, usize)>,
-    names: &[(String, usize)],
+    giver: &Person,
+    // giver_name: &str,
+    // giver_family_number: Option<usize>,
+    names: &[Person],
 
     receiving_vec: &[String],
     previous_years_giving: &[String],
-) -> Option<String> {
+) -> Option<Person> {
     let mut rng = thread_rng();
-    let mut potential_receiver: (String, usize);
+    let mut potential_receiver: Person;
     let mut loop_counter = 0;
 
     loop {
@@ -77,11 +104,13 @@ fn find_receiver_for(
         //   - potential receiver is in this giver's family
         //   - potential receiver has given to this person in previous years
 
-        if receiving_vec.contains(&potential_receiver.0)
-            || potential_receiver.0 == giver_name
-            || giver_family_number == potential_receiver.1
-            || previous_years_giving
-                .contains(&format!("{} gives to {}", giver_name, potential_receiver.0))
+        if receiving_vec.contains(&potential_receiver.name)
+            || potential_receiver.name == giver.name
+            || giver.family_number == potential_receiver.family_number
+            || previous_years_giving.contains(&format!(
+                "{} gives to {}",
+                giver.name, potential_receiver.name
+            ))
         {
             // go to the next iteration of the loop and find a new potential_receiver
             continue;
@@ -92,7 +121,7 @@ fn find_receiver_for(
         }
     }
 
-    Some(potential_receiver.0)
+    Some(potential_receiver)
 }
 
 pub fn get_file_path() -> String {
@@ -122,13 +151,16 @@ pub fn read_csv(file_path: &str) -> Vec<Vec<String>> {
     names
 }
 
-pub fn flatten_and_shuffle(families: Vec<Vec<String>>) -> Vec<(String, usize)> {
+pub fn flatten_and_shuffle(families: Vec<Vec<String>>) -> Vec<Person> {
     let mut rng = thread_rng();
-    let mut flat_names: Vec<(String, usize)> = vec![];
+    let mut flat_names: Vec<Person> = vec![];
 
     for (number, family) in families.iter().enumerate() {
         for name in family {
-            flat_names.push((name.to_string(), number));
+            flat_names.push(Person {
+                name: name.to_string(),
+                family_number: Some(number),
+            });
         }
     }
     rng.shuffle(&mut flat_names);
@@ -171,9 +203,8 @@ mod integration_tests {
         names_file_path: &str,
         previous_years_file_path: &str, // and this is like &Vec<String> , but it's a slice I guess
         special_requests_file_path: &str,
-    ) -> Vec<(String, String)> {
-        let names: Vec<Vec<String>> = read_csv(names_file_path);
-        let names = flatten_and_shuffle(names);
+    ) -> Vec<Assignment> {
+        let names: Vec<Person> = flatten_and_shuffle(read_csv(names_file_path));
 
         let previous_years_giving: Vec<String> = if previous_years_file_path.is_empty() {
             [].to_vec()
@@ -207,7 +238,7 @@ mod integration_tests {
             "./test-files/previous-years-giving-list-test.txt",
             "./test-files/special-requests-test.txt",
         );
-        assert_eq!(assignment_pairs[0].0, "Claire");
+        assert_eq!(assignment_pairs[0].giver.name, "Claire");
     }
 
     #[test]
@@ -218,14 +249,14 @@ mod integration_tests {
                 "test-files/previous-years-giving-list-test.txt",
                 "test-files/special-requests-test.txt",
             );
-            assert_eq!(assignment_pairs[0].0, "Claire");
-            assert_eq!(assignment_pairs[0].1, "Jay");
+            assert_eq!(assignment_pairs[0].giver.name, "Claire");
+            assert_eq!(assignment_pairs[0].receiver.name, "Jay");
 
-            assert_eq!(assignment_pairs[1].0, "Alex");
-            assert_eq!(assignment_pairs[1].1, "Gloria");
+            assert_eq!(assignment_pairs[1].giver.name, "Alex");
+            assert_eq!(assignment_pairs[1].receiver.name, "Gloria");
 
-            assert_eq!(assignment_pairs[2].0, "Haley");
-            assert_eq!(assignment_pairs[2].1, "Manny");
+            assert_eq!(assignment_pairs[2].giver.name, "Haley");
+            assert_eq!(assignment_pairs[2].receiver.name, "Manny");
         }
     }
     use std::collections::HashSet;
@@ -239,12 +270,12 @@ mod integration_tests {
         iter.into_iter().all(move |x| uniq.insert(x))
     }
 
-    fn get_givers_vec(assignment_pairs: Vec<(String, String)>) -> Vec<String> {
-        let mut givers = vec![];
+    fn get_givers_vec(assignment_pairs: Vec<Assignment>) -> Vec<String> {
+        let mut givers_names = vec![];
         for pair in assignment_pairs {
-            givers.push(pair.0);
+            givers_names.push(pair.giver.name);
         }
-        givers
+        givers_names
     }
 
     #[test]
@@ -255,17 +286,17 @@ mod integration_tests {
                 "test-files/previous-years-giving-list-test.txt",
                 "test-files/special-requests-test.txt",
             );
-            let givers = get_givers_vec(assignment_pairs);
-            assert!(has_unique_elements(givers));
+            let givers_names = get_givers_vec(assignment_pairs);
+            assert!(has_unique_elements(givers_names));
         }
     }
 
-    fn get_receivers_vec(assignment_pairs: Vec<(String, String)>) -> Vec<String> {
-        let mut receivers = vec![];
+    fn get_receivers_vec(assignment_pairs: Vec<Assignment>) -> Vec<String> {
+        let mut receivers_names = vec![];
         for pair in assignment_pairs {
-            receivers.push(pair.1);
+            receivers_names.push(pair.receiver.name);
         }
-        receivers
+        receivers_names
     }
 
     #[test]
@@ -276,8 +307,8 @@ mod integration_tests {
                 "test-files/previous-years-giving-list-test.txt",
                 "test-files/special-requests-test.txt",
             );
-            let receivers = get_receivers_vec(assignment_pairs);
-            assert!(has_unique_elements(receivers));
+            let receivers_names = get_receivers_vec(assignment_pairs);
+            assert!(has_unique_elements(receivers_names));
         }
     }
 
@@ -291,11 +322,33 @@ mod integration_tests {
             );
             let mut pair_one_count: f64 = 0 as f64;
             let mut pair_two_count: f64 = 0 as f64;
-            if assignment_pairs.contains(&("Phil".to_string(), "Cameron".to_string())) {
+            let phil = Person {
+                name: "Phil".to_string(),
+                family_number: None,
+            };
+            let claire = Person {
+                name: "Claire".to_string(),
+                family_number: None,
+            };
+            let cameron = Person {
+                name: "Cameron".to_string(),
+                family_number: None,
+            };
+            let manny = Person {
+                name: "Manny".to_string(),
+                family_number: None,
+            };
+            if assignment_pairs.contains(&Assignment {
+                giver: phil,
+                receiver: cameron,
+            }) {
                 pair_one_count = pair_one_count + 1.0;
             }
 
-            if assignment_pairs.contains(&("Manny".to_string(), "Claire".to_string())) {
+            if assignment_pairs.contains(&Assignment {
+                giver: manny,
+                receiver: claire,
+            }) {
                 pair_two_count = pair_two_count + 1.0;
             }
             assert!(
@@ -326,17 +379,17 @@ mod integration_tests {
     }
 
     use std::collections::HashMap;
-    fn individual_giver_chi_test(giver_name: String, upper_tail_critical: f64) -> bool {
+    fn individual_giver_chi_test(giver: Person, upper_tail_critical: f64) -> bool {
         // run 1000 trials to get a Vector of observed values
 
-        let mut observed_receivers_hashmap: HashMap<String, usize> = HashMap::new();
+        let mut observed_receivers_hashmap: HashMap<Person, usize> = HashMap::new();
 
         for _ in 0..1000 {
             let assignment_pairs = make_a_list("test-files/test-names.csv", "", "");
-            for pair in assignment_pairs {
-                if pair.0 == giver_name {
+            for assignment in assignment_pairs {
+                if assignment.giver.name == giver.name {
                     observed_receivers_hashmap
-                        .entry(pair.1)
+                        .entry(assignment.receiver)
                         .and_modify(|count| *count += 1)
                         .or_insert(1);
                 }
@@ -345,22 +398,22 @@ mod integration_tests {
         // this won't find cases where Claire _never_ gives to a legitimate receiver... _probably_ not a huge deal
 
         // convert the Hashmap to a Vector to make it easier to iterate through
-        let observed_receivers_vec: Vec<(&String, &usize)> =
+        let observed_receivers_vec: Vec<(&Person, &usize)> =
             observed_receivers_hashmap.iter().collect();
 
         // now calculate the chi-squared statistic
         let mut chi_squared_statistic: f64 = 0.0;
-        println!("For {}... ", giver_name);
+        println!("For {}... ", giver.name);
         for (_n, observed_receiver_name_and_count) in observed_receivers_vec.iter().enumerate() {
-            let receiver_name = observed_receiver_name_and_count.0;
+            let receiver = observed_receiver_name_and_count.0;
             let observed_count = observed_receiver_name_and_count.1;
 
             let expected_count: f64 =
-                1000.0 / (look_up_number_of_potential_receivers(&giver_name) as f64);
+                1000.0 / (look_up_number_of_potential_receivers(&giver.name) as f64);
 
             println!(
                 "We expected {} to give to {} {} times out of 1000; Observed: {} times out of 1000",
-                giver_name, receiver_name, expected_count, observed_count
+                giver.name, receiver.name, expected_count, observed_count
             );
 
             chi_squared_statistic = chi_squared_statistic
@@ -370,7 +423,7 @@ mod integration_tests {
 
         println!(
             "For {}, found a chi squared of {}",
-            giver_name, chi_squared_statistic
+            giver.name, chi_squared_statistic
         );
 
         chi_squared_statistic < upper_tail_critical
@@ -379,22 +432,38 @@ mod integration_tests {
     // https://en.wikibooks.org/wiki/Engineering_Tables/Chi-Squared_Distibution
     #[test]
     fn chi_squared_test_claire() {
-        assert!(individual_giver_chi_test("Claire".to_string(), 11.070))
+        let claire = Person {
+            name: "Claire".to_string(),
+            family_number: None,
+        };
+        assert!(individual_giver_chi_test(claire, 11.070))
     }
 
     #[test]
     fn chi_squared_test_phil() {
-        assert!(individual_giver_chi_test("Phil".to_string(), 11.070))
+        let phil = Person {
+            name: "Phil".to_string(),
+            family_number: None,
+        };
+        assert!(individual_giver_chi_test(phil, 11.070))
     }
 
     #[test]
     fn chi_squared_test_cameron() {
-        assert!(individual_giver_chi_test("Cameron".to_string(), 14.067))
+        let cameron = Person {
+            name: "Cameron".to_string(),
+            family_number: None,
+        };
+        assert!(individual_giver_chi_test(cameron, 14.067))
     }
 
     #[test]
     fn chi_squared_test_manny() {
-        assert!(individual_giver_chi_test("Manny".to_string(), 14.067))
+        let manny = Person {
+            name: "Manny".to_string(),
+            family_number: None,
+        };
+        assert!(individual_giver_chi_test(manny, 14.067))
     }
     // Other test ideas
     // 1. Check that no previous year assignment_pairs are assigned
