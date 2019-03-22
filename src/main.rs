@@ -27,9 +27,9 @@ fn main() {
     // loop until we get a good solution
     loop {
         match find_gift_givers(&names, &previous_years_giving, &special_requests) {
-            Some(mut assignment_pairs) => {
+            Some(assignment_pairs) => {
                 // sort list alphabetically to cover evidence of special requests
-                // assignment_pairs.sort();
+                let assignment_pairs = sort_assignments_alphabetically(assignment_pairs);
                 for assignment in assignment_pairs {
                     println!(
                         "{} gives to {}",

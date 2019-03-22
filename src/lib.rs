@@ -167,6 +167,12 @@ pub fn flatten_and_shuffle(families: Vec<Vec<String>>) -> Vec<Person> {
     flat_names
 }
 
+pub fn sort_assignments_alphabetically(mut assignments: Vec<Assignment>) -> Vec<Assignment> {
+    assignments
+        .sort_by(|assignment1, assignment2| assignment1.giver.name.cmp(&assignment2.giver.name));
+    assignments
+}
+
 // helper functions (also in sts10/eyeoh)
 pub fn gets() -> io::Result<String> {
     let mut input = String::new();
