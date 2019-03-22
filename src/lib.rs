@@ -1,7 +1,6 @@
 extern crate csv;
 extern crate rand;
 use rand::prelude::*;
-// use std::collections::hash_map::HashMap;
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
@@ -20,18 +19,18 @@ pub struct Assignment {
 }
 
 pub fn find_gift_givers(
-    names: &[Person],                 // this is like &Vec<Vec<String>>
+    names: &[Person],                 // this is like &Vec<Person>
     previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
     special_requests: &[String],
 ) -> Option<Vec<Assignment>> {
     let mut receiving_vec: Vec<String> = [].to_vec();
-    let mut givers_vec: Vec<String> = [].to_vec();
+    let mut special_request_givers_vec: Vec<String> = [].to_vec();
     let mut assignment_pairs: Vec<Assignment> = [].to_vec();
 
     // first, handle special requests
     for request in special_requests {
         let request_vec: Vec<&str> = request.split(' ').collect();
-        givers_vec.push(request_vec[0].to_string());
+        special_request_givers_vec.push(request_vec[0].to_string());
         receiving_vec.push(request_vec[3].to_string());
         let giver = Person {
             name: request_vec[0].to_string(),
@@ -41,32 +40,22 @@ pub fn find_gift_givers(
             name: request_vec[3].to_string(),
             family_number: None,
         };
-        assignment_pairs.push(Assignment {
-            giver: giver,
-            receiver: receiver,
-        });
+        assignment_pairs.push(Assignment { giver, receiver });
     }
 
     for giver in names {
-        if givers_vec.contains(&giver.name) {
+        if special_request_givers_vec.contains(&giver.name) {
             continue;
         }
         // if we're here, we didn't find a special request of who they should give to,
         // so we need to find a receiver for them
 
-        match find_receiver_for(
-            giver,
-            // &giver.name,
-            // giver.family_number,
-            &names,
-            &receiving_vec,
-            previous_years_giving,
-        ) {
+        match find_receiver_for(giver, &names, &receiving_vec, previous_years_giving) {
             Some(receiver) => {
                 receiving_vec.push(receiver.name.clone());
                 assignment_pairs.push(Assignment {
                     giver: giver.clone(),
-                    receiver: receiver,
+                    receiver,
                 });
             }
             None => return None, // println!("Couldn't find solution. Please run program again."),
@@ -77,10 +66,7 @@ pub fn find_gift_givers(
 
 fn find_receiver_for(
     giver: &Person,
-    // giver_name: &str,
-    // giver_family_number: Option<usize>,
     names: &[Person],
-
     receiving_vec: &[String],
     previous_years_giving: &[String],
 ) -> Option<Person> {
