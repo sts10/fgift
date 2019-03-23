@@ -305,6 +305,18 @@ mod integration_tests {
     }
 
     #[test]
+    fn no_one_gives_to_own_family_member() {
+        let assignments = make_a_list("test-files/test-names.csv", "", "");
+        let mut found_bad = false;
+
+        for assignment in assignments {
+            found_bad = assignment.giver.family_number == assignment.receiver.family_number;
+            break;
+        }
+        assert!(found_bad == false)
+    }
+
+    #[test]
     fn sufficiently_random_basic_test() {
         for _ in 0..1000 {
             let assignment_pairs = make_a_list(
