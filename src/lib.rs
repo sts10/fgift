@@ -262,10 +262,10 @@ mod integration_tests {
         iter.into_iter().all(move |x| uniq.insert(x))
     }
 
-    fn get_givers_vec(assignment_pairs: Vec<Assignment>) -> Vec<String> {
+    fn get_givers_vec(assignments: Vec<Assignment>) -> Vec<String> {
         let mut givers_names = vec![];
-        for pair in assignment_pairs {
-            givers_names.push(pair.giver.name);
+        for assignment in assignments {
+            givers_names.push(assignment.giver.name);
         }
         givers_names
     }
@@ -273,20 +273,20 @@ mod integration_tests {
     #[test]
     fn no_repeat_givers() {
         for _ in 0..1000 {
-            let assignment_pairs = make_a_list(
+            let assignments = make_a_list(
                 "test-files/test-names.csv",
                 "test-files/previous-years-giving-list-test.txt",
                 "test-files/special-requests-test.txt",
             );
-            let givers_names = get_givers_vec(assignment_pairs);
+            let givers_names = get_givers_vec(assignments);
             assert!(has_unique_elements(givers_names));
         }
     }
 
-    fn get_receivers_vec(assignment_pairs: Vec<Assignment>) -> Vec<String> {
+    fn get_receivers_vec(assignments: Vec<Assignment>) -> Vec<String> {
         let mut receivers_names = vec![];
-        for pair in assignment_pairs {
-            receivers_names.push(pair.receiver.name);
+        for assignment in assignments {
+            receivers_names.push(assignment.receiver.name);
         }
         receivers_names
     }
@@ -294,26 +294,49 @@ mod integration_tests {
     #[test]
     fn no_repeat_receivers() {
         for _ in 0..1000 {
-            let assignment_pairs = make_a_list(
+            let assignments = make_a_list(
                 "test-files/test-names.csv",
                 "test-files/previous-years-giving-list-test.txt",
                 "test-files/special-requests-test.txt",
             );
-            let receivers_names = get_receivers_vec(assignment_pairs);
+            let receivers_names = get_receivers_vec(assignments);
             assert!(has_unique_elements(receivers_names));
         }
     }
 
     #[test]
     fn no_one_gives_to_own_family_member() {
-        let assignments = make_a_list("test-files/test-names.csv", "", "");
-        let mut found_bad = false;
-
-        for assignment in assignments {
-            found_bad = assignment.giver.family_number == assignment.receiver.family_number;
-            break;
+        for _ in 0..1000 {
+            let assignments = make_a_list("test-files/test-names.csv", "", "");
+            for assignment in assignments {
+                assert!(assignment.giver.family_number != assignment.receiver.family_number);
+            }
         }
-        assert!(found_bad == false)
+    }
+
+    #[test]
+    fn no_assignments_from_previous_years_are_given() {
+        let previous_years_file_path = "test-files/previous-years-giving-list-test.txt";
+
+        let previous_years_giving: Vec<String> = if previous_years_file_path.is_empty() {
+            [].to_vec()
+        } else {
+            read_by_line(&previous_years_file_path).unwrap()
+        };
+
+        for _ in 0..1000 {
+            let assignments =
+                make_a_list("test-files/test-names.csv", &previous_years_file_path, "");
+
+            for assignment in assignments {
+                // if we ever have a match with a previous year, test fails.
+                // so `assert` that there is no match ever time. If it ever fails, test fails.
+                assert!(!previous_years_giving.contains(&format!(
+                    "{} gives to {}",
+                    assignment.giver.name, assignment.receiver.name
+                )))
+            }
+        }
     }
 
     #[test]
