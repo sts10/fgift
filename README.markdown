@@ -1,8 +1,28 @@
-# Family Gift (Secret Santa) List Maker
+# FGift: Family Gift (Secret Santa) List Maker
 
 Takes an input of a CSV file, describing an extended family, with each line an immediate family. Outputs a list of who should give to who, ensuring that no one gives to anyone in their immediate family, but otherwise selecting randomly.
 
 Obviously you could substitute the concept of "families" for small teams at your work.
+
+## Usage
+
+```text
+USAGE:
+    fgift [FLAGS] [OPTIONS] <NAMES CSV FILE>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+    -v, --verbose    Give verbose output
+
+OPTIONS:
+    -p, --previous <previous_years_file>     Provide file with previous years giving
+    -s, --special <special_requests_file>    Provide file with special requests Special requests are assignments that
+                                             must be made
+
+ARGS:
+    <NAMES CSV FILE>    CSV of family names
+```
 
 ## Example CSV
 
@@ -36,19 +56,26 @@ Lily gives to Claire
 
 As you can see, for example, Claire does not give to Phil, Haley, Alex, or Luke, since they are in the same immediate family (this directive is established in the input CSV -- they're all in the same row). 
 
-## How to make your own list
+## Installation 
 
-[Install Rust](https://www.rust-lang.org/en-US/install.html). Clone down this directory, `cd` into it, then run `cargo run`. You'll be prompted to enter the file location of your CSV file.
+1. [Install Rust](https://www.rust-lang.org/tools/install) if you haven't already
+2. `cargo install --git https://github.com/sts10/fgift`
 
-`test-names.csv` provides a template for this CSV input file-- basically each immediate family goes on its own line, with the first row being a title (it doesn't matter what the title is).
+## Examples
+
+- `fgift tests/test-files/test-names.csv` Creates random gift assignments from Names file `test-names.csv`, without assigning anyone to give to members of their immediate family (as denoted by rows in the `test-names.csv` file (see above for examples).
+
+- `fgift -p=tests/test-files/previous-years-giving-list-test.txt tests/test-files/test-names.csv` Creates gift assignments without repeating any assignments found in `previous-years-giving-list-test.txt`
+
+- `fgift -p=tests/test-files/previous-years-giving-list-test.txt -s=tests/test-files/special-requests-test.txt tests/test-files/test-names.csv` Creates gift assignments that respects special requests made in `special-requests-test.txt` file, then avoids repeating any assignments found in `previous-years-giving-list-test.txt`.
+
+## Options
 
 Optionally, you can enter a text file listing who gave to who in previous years. This file should look just like the output text (i.e. "Claire gives to Cameron").
 
 You can also optionally input a text file containing "special requests," i.e. people who _must_ give to another given person. This file should look just like the output text (i.e. "Claire gives to Cameron").
 
-Once your CSV file (and other optional files) is ready, run `cargo run`, enter the requested file location(s), and see who's giving to who!
-
-## Notes about the CSV input file
+## Notes about the NAMES CSV FILE
 
 Given the way I have the Rust code reading the CSV, it will ignore the first line of the CSV file. So just keep that as a generic title, like "Names".
 
