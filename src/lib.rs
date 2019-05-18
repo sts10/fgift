@@ -5,7 +5,7 @@ use std::fs::File;
 use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
-
+use std::path::PathBuf;
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Person {
     pub name: String,
@@ -116,7 +116,7 @@ pub fn get_file_path() -> String {
     file_path.to_string()
 }
 
-pub fn read_csv(file_path: &str) -> Vec<Vec<String>> {
+pub fn read_csv(file_path: PathBuf) -> Vec<Vec<String>> {
     let mut names: Vec<Vec<String>> = [].to_vec();
 
     let file = File::open(file_path).unwrap();
@@ -168,9 +168,9 @@ pub fn gets() -> io::Result<String> {
     }
 }
 
-pub fn read_by_line(file_path: &str) -> io::Result<Vec<String>> {
+pub fn read_by_line(file_path: PathBuf) -> io::Result<Vec<String>> {
     let mut vec = Vec::new();
-    let f = match File::open(file_path.trim_matches(|c| c == '\'' || c == ' ')) {
+    let f = match File::open(file_path) {
         Ok(res) => res,
         Err(e) => return Err(e),
     };
@@ -179,7 +179,7 @@ pub fn read_by_line(file_path: &str) -> io::Result<Vec<String>> {
         match line {
             Ok(l) => vec.push(l.trim().to_string()),
             Err(e) => {
-                eprintln!("Error reading a line in the {}: {}", file_path, e);
+                eprintln!("Error reading a line in file: {}", e);
                 return Err(e);
             }
         }
@@ -192,22 +192,20 @@ mod integration_tests {
     use super::*;
 
     fn make_a_list(
-        names_file_path: &str,
-        previous_years_file_path: &str, // and this is like &Vec<String> , but it's a slice I guess
-        special_requests_file_path: &str,
+        names_file_path: PathBuf,
+        previous_years_file: Option<PathBuf>, // and this is like &Vec<String> , but it's a slice I guess
+        special_requests_file: Option<PathBuf>,
     ) -> Vec<Assignment> {
         let names: Vec<Person> = flatten_and_shuffle(read_csv(names_file_path));
 
-        let previous_years_giving: Vec<String> = if previous_years_file_path.is_empty() {
-            [].to_vec()
-        } else {
-            read_by_line(&previous_years_file_path).unwrap()
+        let previous_years_giving: Vec<String> = match previous_years_file {
+            Some(file_path) => read_by_line(file_path).unwrap(),
+            None => vec![],
         };
 
-        let special_requests: Vec<String> = if special_requests_file_path.is_empty() {
-            [].to_vec()
-        } else {
-            read_by_line(&special_requests_file_path).unwrap()
+        let special_requests: Vec<String> = match special_requests_file {
+            Some(file_path) => read_by_line(file_path).unwrap(),
+            None => vec![],
         };
 
         // loop until we get a good solution
@@ -226,9 +224,11 @@ mod integration_tests {
     #[test]
     fn claire_gives() {
         let assignment_pairs = make_a_list(
-            "./test-files/test-names.csv",
-            "./test-files/previous-years-giving-list-test.txt",
-            "./test-files/special-requests-test.txt",
+            PathBuf::from("./test-files/test-names.csv"),
+            Some(PathBuf::from(
+                "./test-files/previous-years-giving-list-test.txt",
+            )),
+            Some(PathBuf::from("./test-files/special-requests-test.txt")),
         );
         assert_eq!(assignment_pairs[0].giver.name, "Claire");
     }
@@ -237,9 +237,11 @@ mod integration_tests {
     fn can_fulfill_special_request() {
         for _ in 0..1000 {
             let assignment_pairs = make_a_list(
-                "test-files/test-names.csv",
-                "test-files/previous-years-giving-list-test.txt",
-                "test-files/special-requests-test.txt",
+                PathBuf::from("test-files/test-names.csv"),
+                Some(PathBuf::from(
+                    "test-files/previous-years-giving-list-test.txt",
+                )),
+                Some(PathBuf::from("test-files/special-requests-test.txt")),
             );
             assert_eq!(assignment_pairs[0].giver.name, "Claire");
             assert_eq!(assignment_pairs[0].receiver.name, "Jay");
@@ -274,9 +276,11 @@ mod integration_tests {
     fn no_repeat_givers() {
         for _ in 0..1000 {
             let assignments = make_a_list(
-                "test-files/test-names.csv",
-                "test-files/previous-years-giving-list-test.txt",
-                "test-files/special-requests-test.txt",
+                PathBuf::from("test-files/test-names.csv"),
+                Some(PathBuf::from(
+                    "test-files/previous-years-giving-list-test.txt",
+                )),
+                Some(PathBuf::from("test-files/special-requests-test.txt")),
             );
             let givers_names = get_givers_vec(assignments);
             assert!(has_unique_elements(givers_names));
@@ -295,9 +299,11 @@ mod integration_tests {
     fn no_repeat_receivers() {
         for _ in 0..1000 {
             let assignments = make_a_list(
-                "test-files/test-names.csv",
-                "test-files/previous-years-giving-list-test.txt",
-                "test-files/special-requests-test.txt",
+                PathBuf::from("test-files/test-names.csv"),
+                Some(PathBuf::from(
+                    "test-files/previous-years-giving-list-test.txt",
+                )),
+                Some(PathBuf::from("test-files/special-requests-test.txt")),
             );
             let receivers_names = get_receivers_vec(assignments);
             assert!(has_unique_elements(receivers_names));
@@ -305,9 +311,9 @@ mod integration_tests {
     }
 
     #[test]
-    fn no_one_gives_to_own_family_member() {
+    fn _no_one_gives_to_own_family_member() {
         for _ in 0..1000 {
-            let assignments = make_a_list("test-files/test-names.csv", "", "");
+            let assignments = make_a_list(PathBuf::from("test-files/test-names.csv"), None, None);
             for assignment in assignments {
                 assert!(assignment.giver.family_number != assignment.receiver.family_number);
             }
@@ -316,17 +322,20 @@ mod integration_tests {
 
     #[test]
     fn no_assignments_from_previous_years_are_given() {
-        let previous_years_file_path = "test-files/previous-years-giving-list-test.txt";
+        let previous_years_file = PathBuf::from("test-files/previous-years-giving-list-test.txt");
 
-        let previous_years_giving: Vec<String> = if previous_years_file_path.is_empty() {
-            [].to_vec()
-        } else {
-            read_by_line(&previous_years_file_path).unwrap()
-        };
+        // let previous_years_giving: Vec<String> = match previous_years_file {
+        //     Some(file_path) => read_by_line(file_path).unwrap(),
+        //     None => vec![],
+        // };
+        let previous_years_giving: Vec<String> = read_by_line(previous_years_file.clone()).unwrap();
 
         for _ in 0..1000 {
-            let assignments =
-                make_a_list("test-files/test-names.csv", &previous_years_file_path, "");
+            let assignments = make_a_list(
+                PathBuf::from("test-files/test-names.csv"),
+                Some(previous_years_file.clone()),
+                None,
+            );
 
             for assignment in assignments {
                 // if we ever have a match with a previous year, test fails.
@@ -343,9 +352,11 @@ mod integration_tests {
     fn sufficiently_random_basic_test() {
         for _ in 0..1000 {
             let assignment_pairs = make_a_list(
-                "test-files/test-names.csv",
-                "test-files/previous-years-giving-list-test.txt",
-                "test-files/special-requests-test.txt",
+                PathBuf::from("test-files/test-names.csv"),
+                Some(PathBuf::from(
+                    "test-files/previous-years-giving-list-test.txt",
+                )),
+                Some(PathBuf::from("test-files/special-requests-test.txt")),
             );
             let mut pair_one_count: f64 = 0 as f64;
             let mut pair_two_count: f64 = 0 as f64;
@@ -412,7 +423,8 @@ mod integration_tests {
         let mut observed_receivers_hashmap: HashMap<Person, usize> = HashMap::new();
 
         for _ in 0..1000 {
-            let assignment_pairs = make_a_list("test-files/test-names.csv", "", "");
+            let assignment_pairs =
+                make_a_list(PathBuf::from("test-files/test-names.csv"), None, None);
             for assignment in assignment_pairs {
                 if assignment.giver.name == giver.name {
                     observed_receivers_hashmap

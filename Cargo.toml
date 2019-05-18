@@ -8,3 +8,4 @@ edition = "2018"
 rand = "0.5"
 csv = "1"
 # eyeoh = { git = "https://github.com/sts10/eyeoh" } 
+structopt = "0.2"
