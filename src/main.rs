@@ -15,8 +15,7 @@ struct Opt {
     #[structopt(short = "p", long = "previous", parse(from_os_str))]
     previous_years_file: Option<PathBuf>,
 
-    /// Provide file with special requests
-    /// Special requests are assignments that must be made
+    /// Provide file with special requests (assignments that must be made)
     #[structopt(short = "s", long = "special", parse(from_os_str))]
     special_requests_file: Option<PathBuf>,
 
