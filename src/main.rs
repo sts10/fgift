@@ -4,9 +4,9 @@ use std::path::PathBuf;
 use structopt::StructOpt;
 
 pub mod writer;
-use crate::writer::create_file;
+use crate::writer::create_destination;
 use crate::writer::write_to;
-use crate::writer::Destination;
+// use crate::writer::Destination;
 
 /// fgift: Family Gift List Maker
 #[derive(StructOpt, Debug)]
@@ -48,19 +48,7 @@ fn main() {
         None => vec![],
     };
 
-    let output_dest: Destination = match opt.output {
-        Some(file_path) => Destination::FilePath(file_path),
-        None => Destination::Terminal,
-    };
-
-    match &output_dest {
-        Destination::FilePath(file_path) => {
-            create_file(&Destination::FilePath(file_path.to_string()))
-                .expect("Couldn't write to file");
-        }
-        Destination::Terminal => (),
-    }
-
+    let output_dest = create_destination(opt.output);
     println!("\n");
 
     // loop until we get a good solution

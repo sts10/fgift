@@ -9,6 +9,23 @@ pub enum Destination {
     Terminal,
     FilePath(String),
 }
+
+pub fn create_destination(output: Option<String>) -> Destination {
+    let output_dest: Destination = match output {
+        Some(file_path) => Destination::FilePath(file_path),
+        None => Destination::Terminal,
+    };
+
+    match &output_dest {
+        Destination::FilePath(file_path) => {
+            create_file(&Destination::FilePath(file_path.to_string()))
+                .expect("Couldn't write to file");
+        }
+        Destination::Terminal => (),
+    }
+
+    return output_dest;
+}
 pub fn write_to<StringLike: Into<String>>(
     dest: &Destination,
     output: StringLike,
