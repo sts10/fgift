@@ -6,7 +6,6 @@ use structopt::StructOpt;
 pub mod writer;
 use crate::writer::create_destination;
 use crate::writer::write_to;
-// use crate::writer::Destination;
 
 /// fgift: Family Gift List Maker
 #[derive(StructOpt, Debug)]
@@ -49,8 +48,8 @@ fn main() {
     };
 
     let output_dest = create_destination(opt.output);
-    println!("\n");
 
+    println!("\n");
     // loop until we get a good solution
     loop {
         match find_gift_givers(&names, &previous_years_giving, &special_requests) {
@@ -77,6 +76,5 @@ fn main() {
             }
         };
     }
-    println!("\n------------------");
-    println!("Done!");
+    println!("\n------------------\nDone!");
 }

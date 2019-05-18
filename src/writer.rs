@@ -24,7 +24,7 @@ pub fn create_destination(output: Option<String>) -> Destination {
         Destination::Terminal => (),
     }
 
-    return output_dest;
+    output_dest
 }
 pub fn write_to<StringLike: Into<String>>(
     dest: &Destination,
@@ -43,7 +43,7 @@ pub fn write_to<StringLike: Into<String>>(
         }
     }
 }
-pub fn create_file(dest: &Destination) -> std::io::Result<()> {
+fn create_file(dest: &Destination) -> std::io::Result<()> {
     match dest {
         Destination::FilePath(file_path) => {
             match File::open(file_path) {
