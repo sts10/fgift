@@ -6,3 +6,4 @@ names*.csv
 personal-data
 personal-data/
 personal-data/*
+/personal-data
