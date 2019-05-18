@@ -30,15 +30,17 @@ pub fn find_gift_givers(
 
     // first, handle special requests
     for request in special_requests {
-        let request_vec: Vec<&str> = request.split(' ').collect();
-        special_request_givers_vec.push(request_vec[0].to_string());
-        receiving_vec.push(request_vec[3].to_string());
+        let request_vec: Vec<&str> = request.split(" gives to ").collect();
+        let request_giver_name = request_vec[0].to_string();
+        let request_receiver_name = request_vec[1].to_string();
+        special_request_givers_vec.push(request_giver_name.clone());
+        receiving_vec.push(request_receiver_name.clone());
         let giver = Person {
-            name: request_vec[0].to_string(),
+            name: request_giver_name,
             family_number: None,
         };
         let receiver = Person {
-            name: request_vec[3].to_string(),
+            name: request_receiver_name,
             family_number: None,
         };
         assignment_pairs.push(Assignment { giver, receiver });
