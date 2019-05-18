@@ -3,6 +3,11 @@ use fgift::*;
 use std::path::PathBuf;
 use structopt::StructOpt;
 
+pub mod writer;
+use crate::writer::create_file;
+use crate::writer::write_to;
+use crate::writer::Destination;
+
 /// fgift: Family Gift List Maker
 #[derive(StructOpt, Debug)]
 #[structopt(name = "fgift")]
@@ -18,6 +23,10 @@ struct Opt {
     /// Provide file with special requests (assignments that must be made)
     #[structopt(short = "s", long = "special", parse(from_os_str))]
     special_requests_file: Option<PathBuf>,
+
+    /// Print assignments to a file, rather than the terminal
+    #[structopt(short = "o", long = "output")]
+    output: Option<String>,
 
     /// CSV of family names
     #[structopt(name = "NAMES CSV FILE", parse(from_os_str))]
@@ -38,6 +47,20 @@ fn main() {
         Some(file_path) => read_by_line(file_path).unwrap(),
         None => vec![],
     };
+
+    let output_dest: Destination = match opt.output {
+        Some(file_path) => Destination::FilePath(file_path),
+        None => Destination::Terminal,
+    };
+
+    match &output_dest {
+        Destination::FilePath(file_path) => {
+            create_file(&Destination::FilePath(file_path.to_string()))
+                .expect("Couldn't write to file");
+        }
+        Destination::Terminal => (),
+    }
+
     println!("\n");
 
     // loop until we get a good solution
@@ -47,10 +70,14 @@ fn main() {
                 // sort list alphabetically to cover evidence of special requests
                 let assignment_pairs = sort_assignments_alphabetically(assignment_pairs);
                 for assignment in assignment_pairs {
-                    println!(
-                        "{} gives to {}",
-                        assignment.giver.name, assignment.receiver.name
-                    );
+                    write_to(
+                        &output_dest,
+                        format!(
+                            "{} gives to {}",
+                            assignment.giver.name, assignment.receiver.name
+                        ),
+                    )
+                    .expect("Error writing to output");
                 }
                 break;
             }
