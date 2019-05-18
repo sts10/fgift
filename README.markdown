@@ -54,12 +54,14 @@ Mitchell gives to Luke
 Lily gives to Claire
 ```
 
-As you can see, for example, Claire does not give to Phil, Haley, Alex, or Luke, since they are in the same immediate family (this directive is established in the input CSV -- they're all in the same row). 
+As you can see, for example, Claire does not give to Phil, Haley, Alex, or Luke, since they are in the same immediate family. This information -- that Claire is in a family with Phil, Haley, Alex, and Luke -- is established in the input CSV, by the fact that they're all in the same row. 
 
 ## Installation 
 
 1. [Install Rust](https://www.rust-lang.org/tools/install) if you haven't already
 2. `cargo install --git https://github.com/sts10/fgift`
+
+To upgrade: `cargo install --force --git https://github.com/sts10/fgift`
 
 ## Examples
 
@@ -73,9 +75,9 @@ As you can see, for example, Claire does not give to Phil, Haley, Alex, or Luke,
 
 ## Options
 
-Optionally, you can enter a text file listing who gave to who in previous years. This file should look just like the output text (i.e. "Claire gives to Cameron").
+As shown in the above examples, you can provide (a) a text file of who has given to who in previous years, if you want to avoid reassignments, and/or (b) a file with special requests, that must be fulfilled. 
 
-You can also optionally input a text file containing "special requests," i.e. people who _must_ give to another given person. This file should look just like the output text (i.e. "Claire gives to Cameron").
+Both of these optional files should look just like the output text (i.e. "Claire gives to Cameron").
 
 ## Notes about the NAMES CSV FILE
 
@@ -85,7 +87,7 @@ Generally I'd recommend creating and editing the CSV files in a spreadsheet edit
 
 ## Notes on "Randomness"
 
-Are the results of this program truly random? Or in other words, is it somehow bias in choosing who gives to whom? 
+Are the gift assignments created by this program (if no options are used) truly random? Or in other words, is it somehow bias in choosing who gives to whom? 
 
 Of course the assignments are affected by the no-immediate-family-assignments rule, but outside of that, **I'm trying to make the assignment logic as "random" as possible** while still following the no-immediate-family-assignments rule.
 
