@@ -34,6 +34,9 @@ struct Opt {
 
 fn main() {
     let opt = Opt::from_args();
+    if opt.verbose {
+        println!("{:?}", opt);
+    }
     let names: Vec<Vec<String>> = read_csv(opt.names_file);
     let names = flatten_and_shuffle(names);
 

@@ -16,9 +16,9 @@ FLAGS:
     -v, --verbose    Give verbose output
 
 OPTIONS:
+    -o, --output <output>                    Print assignments to a file, rather than the terminal
     -p, --previous <previous_years_file>     Provide file with previous years giving
-    -s, --special <special_requests_file>    Provide file with special requests (assignments 
-                                             that must be made)
+    -s, --special <special_requests_file>    Provide file with special requests (assignments that must be made)
 
 ARGS:
     <NAMES CSV FILE>    CSV of family names
