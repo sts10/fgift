@@ -24,11 +24,11 @@ ARGS:
     <NAMES CSV FILE>    CSV of family names
 ```
 
-## Example CSV
+## Example input CSV
 
-Make a CSV where each row is an immediate family. 
+To begin, you'll need a CSV where each row is an immediate (nuclear) family to provide as an input to this tool.
 
-For example, a CSV like this...
+For example, when you give this program a CSV file that looks like this...
 
 ```csv
 Names,,,,
@@ -37,7 +37,7 @@ Cameron,Mitchell,Lily,,
 Jay,Gloria,Manny,,
 ```
 
-Could give you an output like this:
+This program gives you an output like this:
 
 ```
 Claire gives to Cameron
@@ -54,7 +54,7 @@ Mitchell gives to Luke
 Lily gives to Claire
 ```
 
-As you can see, for example, Claire does not give to Phil, Haley, Alex, or Luke, since they are in the same immediate family. This information -- that Claire is in a family with Phil, Haley, Alex, and Luke -- is established in the input CSV, by the fact that they're all in the same row. 
+As you can see, for example, Claire does not give to Phil, Haley, Alex, or Luke, since they are in the same immediate family. This information -- that Claire is in an immediate family with Phil, Haley, Alex, and Luke -- is established in the input CSV, by the fact that they're all in the same row. 
 
 ## Installation 
 
@@ -85,7 +85,7 @@ Given the way I have the Rust code reading the CSV, it will ignore the first lin
 
 Generally I'd recommend creating and editing the CSV files in a spreadsheet editor like Microsoft Excel or [LibreOffice](https://www.libreoffice.org/) Calc, rather than a text editor like Vim or Sublime Text.
 
-## Notes on "Randomness"
+## Notes on "randomness"
 
 Are the gift assignments created by this program (if no options are used) truly random? Or in other words, is it somehow bias in choosing who gives to whom? 
 
