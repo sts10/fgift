@@ -64,6 +64,10 @@ pub fn find_gift_givers(
             None => return None, // println!("Couldn't find solution. Please run program again."),
         }
     }
+    if verify_assignments(names, &assignment_pairs) == false {
+        eprintln!("Didn't make enough assignment pairs");
+        return None; // bad solution
+    }
     Some(assignment_pairs)
 }
 
@@ -111,6 +115,29 @@ fn find_receiver_for(
     }
 
     Some(potential_receiver)
+}
+
+fn verify_assignments(names: &[Person], assignment_pairs: &[Assignment]) -> bool {
+    if assignment_pairs.len() != names.len() {
+        return false;
+    }
+    for name in names {
+        let mut gives: bool = false;
+        let mut receives: bool = false;
+        for assignment in assignment_pairs {
+            if name == &assignment.giver {
+                gives = true;
+            }
+            if name == &assignment.receiver {
+                receives = true;
+            }
+        }
+        if gives == false || receives == false {
+            return false;
+        }
+    }
+    println!("Assignments have been verified ({} names, {} assignment pairs, and all give and all receive)\n", names.len(), assignment_pairs.len());
+    true
 }
 
 pub fn get_file_path() -> String {

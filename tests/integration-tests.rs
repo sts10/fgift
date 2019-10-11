@@ -133,6 +133,37 @@ mod integration_tests {
     }
 
     #[test]
+    fn everyone_gives_and_receives() {
+        let names_file_path = "tests/test-files/test-names.csv";
+        let names: Vec<Person> = flatten_and_shuffle(read_csv(PathBuf::from(names_file_path)));
+        let previous_years_file =
+            PathBuf::from("tests/test-files/previous-years-giving-list-test.txt");
+
+        for _ in 0..1000 {
+            let assignment_pairs = make_a_list(
+                PathBuf::from(names_file_path),
+                Some(previous_years_file.clone()),
+                None,
+            );
+
+            assert!(&names.len() > &0);
+            for name in &names {
+                let mut gives: bool = false;
+                let mut receives: bool = false;
+                for assignment in &assignment_pairs {
+                    if name == &assignment.giver {
+                        gives = true;
+                    }
+                    if name == &assignment.receiver {
+                        receives = true;
+                    }
+                }
+                assert!(gives && receives)
+            }
+        }
+    }
+
+    #[test]
     fn no_assignments_from_previous_years_are_given() {
         let previous_years_file =
             PathBuf::from("tests/test-files/previous-years-giving-list-test.txt");
