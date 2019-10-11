@@ -57,15 +57,14 @@ fn main() {
     loop {
         match find_gift_givers(&names, &previous_years_giving, &special_requests) {
             Some(assignment_pairs) => {
-                // verifiedy
-
+                // Verfify that everyone gives and everyone receives
                 if verify_assignments(&names, &assignment_pairs) {
                     println!("Assignments have been verified ({} names, {} assignment pairs, and all give and all receive)\n", names.len(), assignment_pairs.len());
                 } else {
                     eprintln!("Found bad assignments. Will try again.");
-                    continue; // bad solution
+                    continue;
                 }
-                // sort list alphabetically to cover evidence of special requests
+                // Sort list alphabetically to cover evidence of special requests
                 let assignment_pairs = sort_assignments_alphabetically(assignment_pairs);
                 for assignment in assignment_pairs {
                     write_to(
