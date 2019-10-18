@@ -128,7 +128,7 @@ pub fn verify_assignments(names: &[Person], assignment_pairs: &[Assignment]) -> 
                 receives = true;
             }
         }
-        if gives == false || receives == false {
+        if !gives || !receives {
             return false;
         }
     }
