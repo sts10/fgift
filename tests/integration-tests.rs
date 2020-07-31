@@ -4,8 +4,8 @@ mod integration_tests {
 
     fn make_a_list(
         names_file_path: PathBuf,
-        previous_years_file: Option<PathBuf>, // and this is like &Vec<String> , but it's a slice I guess
-        special_requests_file: Option<PathBuf>,
+        previous_years_file: Option<&PathBuf>,
+        special_requests_file: Option<&PathBuf>,
     ) -> Vec<Assignment> {
         let names: Vec<Person> = flatten_and_shuffle(read_csv(&names_file_path));
 
@@ -36,10 +36,10 @@ mod integration_tests {
     fn claire_gives() {
         let assignment_pairs = make_a_list(
             PathBuf::from("tests/test-files/test-names.csv"),
-            Some(PathBuf::from(
+            Some(&PathBuf::from(
                 "tests/test-files/previous-years-giving-list-test.txt",
             )),
-            Some(PathBuf::from("tests/test-files/special-requests-test.txt")),
+            Some(&PathBuf::from("tests/test-files/special-requests-test.txt")),
         );
         assert_eq!(assignment_pairs[0].giver.name, "Claire");
     }
@@ -49,10 +49,10 @@ mod integration_tests {
         for _ in 0..1000 {
             let assignment_pairs = make_a_list(
                 PathBuf::from("tests/test-files/test-names.csv"),
-                Some(PathBuf::from(
+                Some(&PathBuf::from(
                     "tests/test-files/previous-years-giving-list-test.txt",
                 )),
-                Some(PathBuf::from("tests/test-files/special-requests-test.txt")),
+                Some(&PathBuf::from("tests/test-files/special-requests-test.txt")),
             );
             assert_eq!(assignment_pairs[0].giver.name, "Claire");
             assert_eq!(assignment_pairs[0].receiver.name, "Jay");
@@ -88,10 +88,10 @@ mod integration_tests {
         for _ in 0..1000 {
             let assignments = make_a_list(
                 PathBuf::from("tests/test-files/test-names.csv"),
-                Some(PathBuf::from(
+                Some(&PathBuf::from(
                     "tests/test-files/previous-years-giving-list-test.txt",
                 )),
-                Some(PathBuf::from("tests/test-files/special-requests-test.txt")),
+                Some(&PathBuf::from("tests/test-files/special-requests-test.txt")),
             );
             let givers_names = get_givers_vec(assignments);
             assert!(has_unique_elements(givers_names));
@@ -111,10 +111,10 @@ mod integration_tests {
         for _ in 0..1000 {
             let assignments = make_a_list(
                 PathBuf::from("tests/test-files/test-names.csv"),
-                Some(PathBuf::from(
+                Some(&PathBuf::from(
                     "tests/test-files/previous-years-giving-list-test.txt",
                 )),
-                Some(PathBuf::from("tests/test-files/special-requests-test.txt")),
+                Some(&PathBuf::from("tests/test-files/special-requests-test.txt")),
             );
             let receivers_names = get_receivers_vec(assignments);
             assert!(has_unique_elements(receivers_names));
@@ -142,7 +142,7 @@ mod integration_tests {
         for _ in 0..1000 {
             let assignment_pairs = make_a_list(
                 PathBuf::from(names_file_path),
-                Some(previous_years_file.clone()),
+                Some(&previous_years_file),
                 None,
             );
 
@@ -177,7 +177,7 @@ mod integration_tests {
         for _ in 0..1000 {
             let assignments = make_a_list(
                 PathBuf::from("tests/test-files/test-names.csv"),
-                Some(previous_years_file.clone()), // wonder if I can remove this clone to speed up testing
+                Some(&previous_years_file),
                 None,
             );
 
@@ -197,10 +197,10 @@ mod integration_tests {
         for _ in 0..1000 {
             let assignment_pairs = make_a_list(
                 PathBuf::from("tests/test-files/test-names.csv"),
-                Some(PathBuf::from(
+                Some(&PathBuf::from(
                     "tests/test-files/previous-years-giving-list-test.txt",
                 )),
-                Some(PathBuf::from("tests/test-files/special-requests-test.txt")),
+                Some(&PathBuf::from("tests/test-files/special-requests-test.txt")),
             );
             let mut pair_one_count: f64 = 0 as f64;
             let mut pair_two_count: f64 = 0 as f64;
