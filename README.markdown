@@ -85,6 +85,8 @@ Given the way I have the Rust code reading the CSV, it will ignore the first lin
 
 Generally I'd recommend creating and editing the CSV files in a spreadsheet editor like Microsoft Excel or [LibreOffice](https://www.libreoffice.org/) Calc, rather than a text editor like Vim or Sublime Text.
 
+------
+
 ## Notes on "randomness"
 
 Are the gift assignments created by this program (if no options are used) truly random? Or in other words, is it somehow bias in choosing who gives to whom? 

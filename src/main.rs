@@ -11,7 +11,7 @@ use crate::writer::write_to;
 #[derive(StructOpt, Debug)]
 #[structopt(name = "fgift")]
 struct Opt {
-    /// Give verbose output
+    /// Prints parameters as given (verbose)
     #[structopt(short = "v", long = "verbose")]
     verbose: bool,
 
@@ -23,7 +23,7 @@ struct Opt {
     #[structopt(short = "s", long = "special", parse(from_os_str))]
     special_requests_file: Option<PathBuf>,
 
-    /// Print assignments to a file, rather than the terminal
+    /// Print assignments to a file, rather than to the terminal
     #[structopt(short = "o", long = "output")]
     output: Option<String>,
 
@@ -35,7 +35,7 @@ struct Opt {
 fn main() {
     let opt = Opt::from_args();
     if opt.verbose {
-        println!("{:?}", opt);
+        println!("Parameters received: {:?}", opt);
     }
     let names: Vec<Vec<String>> = read_csv(opt.names_file);
     let names = flatten_and_shuffle(names);
