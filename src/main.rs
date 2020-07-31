@@ -11,7 +11,7 @@ use crate::writer::write_to;
 #[derive(StructOpt, Debug)]
 #[structopt(name = "fgift")]
 struct Opt {
-    /// Prints parameters as given (verbose)
+    /// Prints verbose output, including parameters as received
     #[structopt(short = "v", long = "verbose")]
     verbose: bool,
 
@@ -34,25 +34,26 @@ struct Opt {
 
 fn main() {
     let opt = Opt::from_args();
+    let names: Vec<Vec<String>> = read_csv(&opt.names_file);
+    let names = flatten_and_shuffle(names);
+
+    let previous_years_giving: Vec<String> = match &opt.previous_years_file {
+        Some(file_path) => read_by_line(&file_path).unwrap(),
+        None => vec![],
+    };
+
+    let special_requests: Vec<String> = match &opt.special_requests_file {
+        Some(file_path) => read_by_line(&file_path).unwrap(),
+        None => vec![],
+    };
+
+    let output_dest = create_destination(&opt.output);
+
     if opt.verbose {
         println!("Parameters received: {:?}", opt);
     }
-    let names: Vec<Vec<String>> = read_csv(opt.names_file);
-    let names = flatten_and_shuffle(names);
 
-    let previous_years_giving: Vec<String> = match opt.previous_years_file {
-        Some(file_path) => read_by_line(file_path).unwrap(),
-        None => vec![],
-    };
-
-    let special_requests: Vec<String> = match opt.special_requests_file {
-        Some(file_path) => read_by_line(file_path).unwrap(),
-        None => vec![],
-    };
-
-    let output_dest = create_destination(opt.output);
-
-    println!("\n");
+    println!("");
     // loop until we get a good solution
     loop {
         match find_gift_givers(&names, &previous_years_giving, &special_requests) {
@@ -79,9 +80,11 @@ fn main() {
                 break;
             }
             None => {
-                println!("\n------------------");
-                println!("Got a bad solution\nGoing to try again");
-                println!("------------------\n");
+                if opt.verbose {
+                    println!("\n------------------");
+                    println!("Got a bad solution\nGoing to try again");
+                    println!("------------------\n");
+                }
                 continue;
             }
         };

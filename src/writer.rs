@@ -10,9 +10,9 @@ pub enum Destination {
     FilePath(String),
 }
 
-pub fn create_destination(output: Option<String>) -> Destination {
+pub fn create_destination(output: &Option<String>) -> Destination {
     let output_dest: Destination = match output {
-        Some(file_path) => Destination::FilePath(file_path),
+        Some(file_path) => Destination::FilePath(file_path.to_string()),
         None => Destination::Terminal,
     };
 

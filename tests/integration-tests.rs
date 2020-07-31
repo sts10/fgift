@@ -7,15 +7,15 @@ mod integration_tests {
         previous_years_file: Option<PathBuf>, // and this is like &Vec<String> , but it's a slice I guess
         special_requests_file: Option<PathBuf>,
     ) -> Vec<Assignment> {
-        let names: Vec<Person> = flatten_and_shuffle(read_csv(names_file_path));
+        let names: Vec<Person> = flatten_and_shuffle(read_csv(&names_file_path));
 
         let previous_years_giving: Vec<String> = match previous_years_file {
-            Some(file_path) => read_by_line(file_path).unwrap(),
+            Some(file_path) => read_by_line(&file_path).unwrap(),
             None => vec![],
         };
 
         let special_requests: Vec<String> = match special_requests_file {
-            Some(file_path) => read_by_line(file_path).unwrap(),
+            Some(file_path) => read_by_line(&file_path).unwrap(),
             None => vec![],
         };
 
@@ -135,7 +135,7 @@ mod integration_tests {
     #[test]
     fn everyone_gives_and_receives() {
         let names_file_path = "tests/test-files/test-names.csv";
-        let names: Vec<Person> = flatten_and_shuffle(read_csv(PathBuf::from(names_file_path)));
+        let names: Vec<Person> = flatten_and_shuffle(read_csv(&PathBuf::from(names_file_path)));
         let previous_years_file =
             PathBuf::from("tests/test-files/previous-years-giving-list-test.txt");
 
@@ -172,12 +172,12 @@ mod integration_tests {
         //     Some(file_path) => read_by_line(file_path).unwrap(),
         //     None => vec![],
         // };
-        let previous_years_giving: Vec<String> = read_by_line(previous_years_file.clone()).unwrap();
+        let previous_years_giving: Vec<String> = read_by_line(&previous_years_file).unwrap();
 
         for _ in 0..1000 {
             let assignments = make_a_list(
                 PathBuf::from("tests/test-files/test-names.csv"),
-                Some(previous_years_file.clone()),
+                Some(previous_years_file.clone()), // wonder if I can remove this clone to speed up testing
                 None,
             );
 

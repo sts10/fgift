@@ -141,7 +141,7 @@ pub fn get_file_path() -> String {
     file_path.to_string()
 }
 
-pub fn read_csv(file_path: PathBuf) -> Vec<Vec<String>> {
+pub fn read_csv(file_path: &PathBuf) -> Vec<Vec<String>> {
     let mut names: Vec<Vec<String>> = [].to_vec();
 
     let file = File::open(file_path).unwrap();
@@ -193,7 +193,7 @@ pub fn gets() -> io::Result<String> {
     }
 }
 
-pub fn read_by_line(file_path: PathBuf) -> io::Result<Vec<String>> {
+pub fn read_by_line(file_path: &PathBuf) -> io::Result<Vec<String>> {
     let mut vec = Vec::new();
     let f = match File::open(file_path) {
         Ok(res) => res,
