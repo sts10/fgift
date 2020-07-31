@@ -53,7 +53,7 @@ fn main() {
         println!("Parameters received: {:?}", opt);
     }
 
-    println!("");
+    println!();
     // loop until we get a good solution
     loop {
         match find_gift_givers(&names, &previous_years_giving, &special_requests) {
