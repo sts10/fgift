@@ -1,8 +1,8 @@
-# FGift: Family Gift (Secret Santa) List Maker
+# FGift: Family Gift List Maker
 
-Takes an input of a CSV file, describing an extended family, with each line an immediate family. Outputs a list of who should give to who, ensuring that no one gives to anyone in their immediate family, but otherwise selecting randomly.
+Takes an input of a CSV file, describing an extended family, with each line an immediate family. Outputs a list of who should give to who, ensuring that no one gives to anyone in their immediate family, but otherwise selecting randomly. One common use-case for this would be where you need to create "Secret Santa" give assignments.
 
-Obviously you could substitute the concept of "families" for small teams at your work.
+Obviously you can substitute the concept of "families" for any small groups of people, such as teams at your workplace.
 
 ## Usage
 
