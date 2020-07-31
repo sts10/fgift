@@ -174,7 +174,7 @@ pub fn flatten_and_shuffle(families: Vec<Vec<String>>) -> Vec<Person> {
             });
         }
     }
-    rng.shuffle(&mut flat_names);
+    flat_names.shuffle(&mut rng);
     flat_names
 }
 
