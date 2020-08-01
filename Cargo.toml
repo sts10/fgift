@@ -7,5 +7,4 @@ edition = "2018"
 [dependencies]
 rand = "0.7"
 csv = "1"
-# eyeoh = { git = "https://github.com/sts10/eyeoh" } 
 structopt = "0.3"
