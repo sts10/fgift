@@ -64,15 +64,9 @@ mod integration_tests {
             assert_eq!(assignment_pairs[2].receiver.name, "Manny");
         }
     }
-    use std::collections::HashSet;
-    use std::hash::Hash;
-    fn has_unique_elements<T>(iter: T) -> bool
-    where
-        T: IntoIterator,
-        T::Item: Eq + Hash,
-    {
-        let mut uniq = HashSet::new();
-        iter.into_iter().all(move |x| uniq.insert(x))
+
+    fn is_all_unique<T: PartialEq>(arr: &[T]) -> bool {
+        !arr.windows(2).any(|w| w[0] == w[1])
     }
 
     fn get_givers_vec(assignments: Vec<Assignment>) -> Vec<String> {
@@ -94,7 +88,7 @@ mod integration_tests {
                 Some(&PathBuf::from("tests/test-files/special-requests-test.txt")),
             );
             let givers_names = get_givers_vec(assignments);
-            assert!(has_unique_elements(givers_names));
+            assert!(is_all_unique(&givers_names));
         }
     }
 
@@ -117,7 +111,7 @@ mod integration_tests {
                 Some(&PathBuf::from("tests/test-files/special-requests-test.txt")),
             );
             let receivers_names = get_receivers_vec(assignments);
-            assert!(has_unique_elements(receivers_names));
+            assert!(is_all_unique(&receivers_names));
         }
     }
 
