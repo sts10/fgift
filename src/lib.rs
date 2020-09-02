@@ -166,8 +166,7 @@ pub fn read_csv(file_path: &PathBuf) -> Vec<Vec<String>> {
     names
 }
 
-pub fn flatten_and_shuffle(families: Vec<Vec<String>>) -> Vec<Person> {
-    let mut rng = thread_rng();
+pub fn make_persons(families: Vec<Vec<String>>) -> Vec<Person> {
     let mut flat_names: Vec<Person> = vec![];
 
     for (number, family) in families.iter().enumerate() {
@@ -178,8 +177,13 @@ pub fn flatten_and_shuffle(families: Vec<Vec<String>>) -> Vec<Person> {
             });
         }
     }
-    flat_names.shuffle(&mut rng);
     flat_names
+}
+
+pub fn shuffle_persons(mut v: Vec<Person>) -> Vec<Person> {
+    let mut rng = thread_rng();
+    v.shuffle(&mut rng);
+    v
 }
 
 pub fn sort_assignments_alphabetically(mut assignments: Vec<Assignment>) -> Vec<Assignment> {

@@ -35,7 +35,8 @@ struct Opt {
 fn main() {
     let opt = Opt::from_args();
     let names: Vec<Vec<String>> = read_csv(&opt.names_file);
-    let names = flatten_and_shuffle(names);
+    let names = make_persons(names);
+    let names = shuffle_persons(names);
 
     // I should keep this as an Option<Vec<String>>, rather than pass an empty Vec to
     // find_gift_givers function
