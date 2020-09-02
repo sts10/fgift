@@ -24,18 +24,49 @@ pub fn find_gift_givers(
     previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
     special_requests: &[String],
 ) -> Option<Vec<Assignment>> {
-    // receiving_vec is simply a vector of the names who are already receiving
-    // let mut receiving_vec: Vec<String> = [].to_vec();
-    // let mut special_request_givers_vec: Vec<String> = [].to_vec();
     let mut assignment_pairs: Vec<Assignment> = [].to_vec();
 
-    // first, handle special requests
+    // First, handle special requests
+    assignment_pairs = make_special_requests(special_requests, assignment_pairs);
+
+    // Now do the rest of the random assignments, with consideration for avoiding previous years'
+    // assignments
+    for giver in names {
+        // skip givers who were assigned in special requests (ugh, yes, this isn't great)
+        if assignment_pairs
+            .iter()
+            .any(|pair| pair.giver.name.to_lowercase() == giver.name.to_lowercase())
+        {
+            continue;
+        }
+
+        // If we're here, we didn't find a special request of who they should give to,
+        // so we need to find a receiver for them
+        match find_receiver_for(giver, &names, &assignment_pairs, previous_years_giving) {
+            Some(receiver) => {
+                assignment_pairs.push(Assignment {
+                    giver: giver.clone(),
+                    receiver,
+                });
+            }
+            None => return None,
+        }
+    }
+    Some(assignment_pairs)
+}
+
+fn make_special_requests(
+    special_requests: &[String],
+    existing_assignment_pairs: Vec<Assignment>,
+) -> Vec<Assignment> {
+    let mut new_assignments = existing_assignment_pairs;
+
     for request in special_requests {
+        // I'd love to compress these 3 lines into 1
         let request_vec: Vec<&str> = request.split(" gives to ").collect();
         let request_giver_name = request_vec[0].to_string();
         let request_receiver_name = request_vec[1].to_string();
-        // special_request_givers_vec.push(request_giver_name.clone());
-        // receiving_vec.push(request_receiver_name.clone());
+
         let giver = Person {
             name: request_giver_name,
             family_number: None,
@@ -44,38 +75,9 @@ pub fn find_gift_givers(
             name: request_receiver_name,
             family_number: None,
         };
-        assignment_pairs.push(Assignment { giver, receiver });
+        new_assignments.push(Assignment { giver, receiver });
     }
-    println!(
-        "assignment_pairs len after special requests is {:?}",
-        assignment_pairs.len()
-    );
-
-    // println!("Special request }", assignment_pairs);
-    println!("names len is currently {:?}", names.len());
-
-    'giver: for giver in names {
-        // if special_request_givers_vec.contains(&giver.name) {
-        for existing_assignment in &assignment_pairs {
-            if existing_assignment.giver.name == giver.name {
-                // println!("found a special giver");
-                continue 'giver;
-            }
-        }
-        // if we're here, we didn't find a special request of who they should give to,
-        // so we need to find a receiver for them
-
-        match find_receiver_for(giver, &names, &assignment_pairs, previous_years_giving) {
-            Some(receiver) => {
-                assignment_pairs.push(Assignment {
-                    giver: giver.clone(),
-                    receiver,
-                });
-            }
-            None => return None, // println!("Couldn't find solution. Please run program again."),
-        }
-    }
-    Some(assignment_pairs)
+    new_assignments
 }
 
 fn find_receiver_for(
