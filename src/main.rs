@@ -37,6 +37,8 @@ fn main() {
     let names: Vec<Vec<String>> = read_csv(&opt.names_file);
     let names = flatten_and_shuffle(names);
 
+    // I should keep this as an Option<Vec<String>>, rather than pass an empty Vec to
+    // find_gift_givers function
     let previous_years_giving: Vec<String> = match &opt.previous_years_file {
         Some(file_path) => read_by_line(&file_path).unwrap(),
         None => vec![],
@@ -58,12 +60,13 @@ fn main() {
     loop {
         match find_gift_givers(&names, &previous_years_giving, &special_requests) {
             Some(assignment_pairs) => {
-                // Verfify that everyone gives and everyone receives
+                // Verify that everyone gives and everyone receives
                 if verify_assignments(&names, &assignment_pairs) {
                     println!("Assignments have been verified ({} names, {} assignment pairs, and all give and all receive)\n", names.len(), assignment_pairs.len());
                 } else {
-                    eprintln!("Found bad assignments. Will try again.");
-                    continue;
+                    panic!(
+                        "Was unable to verify that everyone gives and receives. Something wrong with inputs or code."
+                    );
                 }
                 // Sort list alphabetically to cover evidence of special requests
                 let assignment_pairs = sort_assignments_alphabetically(assignment_pairs);
@@ -81,9 +84,7 @@ fn main() {
             }
             None => {
                 if opt.verbose {
-                    println!("\n------------------");
-                    println!("Got a bad solution\nGoing to try again");
-                    println!("------------------\n");
+                    println!("\n------------------\nGot a bad solution. Going to try again\n------------------\n");
                 }
                 continue;
             }
