@@ -125,9 +125,9 @@ pub fn verify_assignments(names: &[Person], assignment_pairs: &[Assignment]) -> 
         return false;
     }
     for name in names {
-        // look through assignments to make sure this name gives to someone...
+        // look through assignments to make sure this name is a giver (gives to someone)...
         let gives: bool = assignment_pairs.iter().any(|pair| &pair.giver == name);
-        // and receives from someone
+        // and is a receiver (receives from someone)
         let receives: bool = assignment_pairs.iter().any(|pair| &pair.receiver == name);
 
         // If we at any point have a name that doesn't give or doesn't receive
