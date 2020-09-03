@@ -37,7 +37,7 @@ Cameron,Mitchell,Lily,,
 Jay,Gloria,Manny,,
 ```
 
-This program gives you an output like this:
+Running `fgift names.csv` gives you an output like this:
 
 ```
 Claire gives to Cameron
@@ -71,17 +71,17 @@ To upgrade fgift, run `cargo install --force --git https://github.com/sts10/fgif
 
 - `fgift -p=tests/test-files/previous-years-giving-list-test.txt tests/test-files/test-names.csv` Creates gift assignments without repeating any assignments found in `previous-years-giving-list-test.txt`
 
-- `fgift -p=tests/test-files/previous-years-giving-list-test.txt -o=this-years-giving.txt tests/test-files/test-names.csv` Creates gift assignments without repeating any assignments found in `previous-years-giving-list-test.txt`. Writes created assignments to text file `this-years-giving.txt` instead of to the terminal.
+- `fgift -p=tests/test-files/previous-years-giving-list-test.txt -o=this-years-assignments.txt tests/test-files/test-names.csv` Creates gift assignments without repeating any assignments found in `previous-years-giving-list-test.txt`. Writes created assignments to text file `this-years-giving.txt` instead of to the terminal.
 
 - `fgift -p=tests/test-files/previous-years-giving-list-test.txt -s=tests/test-files/special-requests-test.txt tests/test-files/test-names.csv` Creates gift assignments that respects special requests made in `special-requests-test.txt` file, then avoids repeating any assignments found in `previous-years-giving-list-test.txt`.
 
 ## Options
 
-As shown in the above examples, you can provide (a) a text file of who has given to who in previous years, if you want to avoid reassignments, and/or (b) a file with special requests, that must be fulfilled. 
+As shown in the above examples, you can provide (a) a text file of who has given to who in previous years, if you want to avoid reassignments, and/or (b) a file with special requests, which will be fulfilled as specified. 
 
-Both of these optional files should look just like the output text (i.e. "Claire gives to Cameron").
+Both of these optional files should look just like the output text (i.e. "Claire gives to Cameron"), with each assignment on its own line.
 
-## Notes about the NAMES CSV FILE
+## Notes about the NAMES CSV file
 
 Given the way I have the Rust code reading the CSV, it will ignore the first line of the CSV file. So just keep that as a generic title, like "Names".
 
