@@ -22,13 +22,26 @@ pub struct Assignment {
 pub fn find_gift_givers(
     persons: &[Person],               // this is like &Vec<Person>
     previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
-    special_requests: &[String],
+    special_requests: &Option<Vec<String>>,
 ) -> Option<Vec<Assignment>> {
-    let mut assignment_pairs: Vec<Assignment> = Vec::new();
-
     // First, handle special requests
-    assignment_pairs = add_special_assignments(persons, special_requests, assignment_pairs);
+    let assignment_pairs_after_special_requests: Vec<Assignment> = match special_requests {
+        Some(requests) => add_special_assignments(persons, &requests, Vec::new()),
+        None => Vec::new(),
+    };
+    finish_assignments_consider_previous_years(
+        persons,
+        assignment_pairs_after_special_requests,
+        previous_years_giving,
+    )
+}
 
+fn finish_assignments_consider_previous_years(
+    persons: &[Person],
+    existing_assignment_pairs: Vec<Assignment>,
+    previous_years_giving: &[String],
+) -> Option<Vec<Assignment>> {
+    let mut assignment_pairs = existing_assignment_pairs;
     // Now do the rest of the random assignments, with consideration for avoiding previous years'
     // assignments
     for giver in persons {
@@ -47,7 +60,9 @@ pub fn find_gift_givers(
                     receiver,
                 });
             }
-            None => return None,
+            None => {
+                return None;
+            }
         }
     }
     Some(assignment_pairs)
@@ -114,7 +129,10 @@ fn find_receiver_for(
             continue;
         }
     }
-    // Unable to find a receiver for this giver. Return None.
+    // Failed to find a receiver for this giver even after 1,000 attempts.
+    // Think this means we painted ourselves in a corner given the given
+    // restrictions. So we need to start over.
+    // Return None and handle this issue elsewhere.
     None
 }
 
@@ -123,7 +141,7 @@ pub fn verify_assignments(persons: &[Person], assignment_pairs: &[Assignment]) -
         return false;
     }
     for name in persons {
-        // look through assignments to make sure this name is a giver (gives to someone)...
+        // Look through assignments to make sure this name is a giver (gives to someone)...
         let gives: bool = assignment_pairs.iter().any(|pair| &pair.giver == name);
         // and is a receiver (receives from someone)
         let receives: bool = assignment_pairs.iter().any(|pair| &pair.receiver == name);

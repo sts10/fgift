@@ -14,9 +14,9 @@ mod integration_tests {
             None => vec![],
         };
 
-        let special_requests: Vec<String> = match special_requests_file {
-            Some(file_path) => read_by_line(&file_path).unwrap(),
-            None => vec![],
+        let special_requests: Option<Vec<String>> = match special_requests_file {
+            Some(file_path) => Some(read_by_line(&file_path).unwrap()),
+            None => None,
         };
 
         // loop until we get a good solution

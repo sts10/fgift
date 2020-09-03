@@ -38,14 +38,14 @@ fn main() {
     let persons = make_persons(names);
     let persons = shuffle_persons(persons);
 
-    // I should keep this as an Option<Vec<String>>, rather than pass an empty Vec to
-    // find_gift_givers function
-    let previous_years_giving: Vec<String> = match &opt.previous_years_file {
-        Some(file_path) => read_by_line(&file_path).unwrap(),
-        None => vec![],
+    let special_requests: Option<Vec<String>> = match &opt.special_requests_file {
+        Some(file_path) => Some(read_by_line(&file_path).unwrap()),
+        None => None,
     };
 
-    let special_requests: Vec<String> = match &opt.special_requests_file {
+    // I should probably make this an Option too, but it's more cumbersome than with
+    // special_requests
+    let previous_years_giving: Vec<String> = match &opt.previous_years_file {
         Some(file_path) => read_by_line(&file_path).unwrap(),
         None => vec![],
     };
