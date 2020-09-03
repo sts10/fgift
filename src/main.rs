@@ -62,13 +62,10 @@ fn main() {
         match find_gift_givers(&persons, &previous_years_giving, &special_requests) {
             Some(assignment_pairs) => {
                 // Verify that everyone gives and everyone receives
-                if verify_assignments(&persons, &assignment_pairs) {
-                    println!("Assignments have been verified ({} persons, {} assignment pairs, and all give and all receive)\n", persons.len(), assignment_pairs.len());
-                } else {
-                    panic!(
-                        "Was unable to verify that everyone gives and receives. Something wrong with inputs or code."
-                    );
-                }
+                assert!(verify_assignments(&persons, &assignment_pairs), "Was unable to verify that everyone gives and receives. Something wrong with inputs or code.");
+                // If we made it here, we know the assignments were verified as good
+                println!("Assignments have been verified ({} persons, {} assignment pairs, and all give and all receive)\n", persons.len(), assignment_pairs.len());
+
                 // Sort list alphabetically to cover evidence of special requests
                 for assignment in sort_assignments_alphabetically(assignment_pairs) {
                     write_to(
