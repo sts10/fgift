@@ -73,7 +73,7 @@ fn add_special_assignments(
                 giver: g.clone(),
                 receiver: r.clone(),
             }),
-            _ => continue,
+            _ => panic!("Found a name in submitted special request file that I could not also find in the submitted names CSV file. Please check spelling and capitalization of names in both files."),
         };
     }
 
