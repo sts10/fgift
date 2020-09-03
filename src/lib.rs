@@ -20,29 +20,27 @@ pub struct Assignment {
 }
 
 pub fn find_gift_givers(
-    names: &[Person],                 // this is like &Vec<Person>
+    persons: &[Person],               // this is like &Vec<Person>
     previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
     special_requests: &[String],
 ) -> Option<Vec<Assignment>> {
     let mut assignment_pairs: Vec<Assignment> = Vec::new();
 
     // First, handle special requests
-    assignment_pairs = add_special_assignments(special_requests, assignment_pairs);
+    assignment_pairs = add_special_assignments(persons, special_requests, assignment_pairs);
 
     // Now do the rest of the random assignments, with consideration for avoiding previous years'
     // assignments
-    for giver in names {
-        // skip givers who were assigned in special requests (ugh, yes, this isn't great)
-        if assignment_pairs
-            .iter()
-            .any(|pair| pair.giver.name.to_lowercase() == giver.name.to_lowercase())
-        {
+    for giver in persons {
+        // Skip givers who were assigned in special requests -- we've already added them to
+        // assignment_pairs in the add_special_assignments function (ugh, yes, this isn't great)
+        if assignment_pairs.iter().any(|pair| &pair.giver == giver) {
             continue;
         }
 
         // If we're here, we didn't find a special request of who they should give to,
         // so we need to find a receiver for them
-        match find_receiver_for(giver, &names, &assignment_pairs, previous_years_giving) {
+        match find_receiver_for(giver, &persons, &assignment_pairs, previous_years_giving) {
             Some(receiver) => {
                 assignment_pairs.push(Assignment {
                     giver: giver.clone(),
@@ -56,33 +54,35 @@ pub fn find_gift_givers(
 }
 
 fn add_special_assignments(
+    persons: &[Person],
     special_requests: &[String],
     existing_assignment_pairs: Vec<Assignment>,
 ) -> Vec<Assignment> {
     let mut new_assignments = existing_assignment_pairs;
 
-    for request in special_requests {
-        // I'd love to compress these 3 lines into 1
-        let request_vec: Vec<&str> = request.split(" gives to ").collect();
+    for request_string in special_requests {
+        let request_vec: Vec<&str> = request_string.split(" gives to ").collect();
         let request_giver_name = request_vec[0].to_string();
         let request_receiver_name = request_vec[1].to_string();
 
-        let giver = Person {
-            name: request_giver_name,
-            family_number: None,
+        let this_giver: Option<&Person> = persons.iter().find(|n| n.name == request_giver_name);
+        let this_receiver: Option<&Person> =
+            persons.iter().find(|n| n.name == request_receiver_name);
+        match (this_giver, this_receiver) {
+            (Some(g), Some(r)) => new_assignments.push(Assignment {
+                giver: g.clone(),
+                receiver: r.clone(),
+            }),
+            _ => continue,
         };
-        let receiver = Person {
-            name: request_receiver_name,
-            family_number: None,
-        };
-        new_assignments.push(Assignment { giver, receiver });
     }
+
     new_assignments
 }
 
 fn find_receiver_for(
     giver: &Person,
-    names: &[Person],
+    persons: &[Person],
     existing_assignment_pairs: &[Assignment],
     previous_years_giving: &[String],
 ) -> Option<Person> {
@@ -90,7 +90,7 @@ fn find_receiver_for(
     let mut potential_receiver: Person;
 
     for _n in 0..1000 {
-        potential_receiver = names[rng.gen_range(0, names.len())].clone();
+        potential_receiver = persons[rng.gen_range(0, persons.len())].clone();
 
         // What makes a GOOD receiver?
         //   - potential receiver is NOT already receiving
@@ -98,12 +98,10 @@ fn find_receiver_for(
         //   - potential receiver is NOT in this giver's family
         //   - potential receiver has NOT given to this person in previous years
 
-        // I have to compare `.name`s here because the Persons generated from special requests
-        // have None for family_number!
         if !existing_assignment_pairs
             .iter()
-            .any(|pair| pair.receiver.name.to_lowercase() == potential_receiver.name.to_lowercase())
-            && potential_receiver.name != giver.name
+            .any(|pair| pair.receiver == potential_receiver)
+            && &potential_receiver != giver
             && giver.family_number != potential_receiver.family_number
             && !previous_years_giving.contains(&format!(
                 "{} gives to {}",
@@ -120,11 +118,11 @@ fn find_receiver_for(
     None
 }
 
-pub fn verify_assignments(names: &[Person], assignment_pairs: &[Assignment]) -> bool {
-    if assignment_pairs.len() != names.len() {
+pub fn verify_assignments(persons: &[Person], assignment_pairs: &[Assignment]) -> bool {
+    if assignment_pairs.len() != persons.len() {
         return false;
     }
-    for name in names {
+    for name in persons {
         // look through assignments to make sure this name is a giver (gives to someone)...
         let gives: bool = assignment_pairs.iter().any(|pair| &pair.giver == name);
         // and is a receiver (receives from someone)
@@ -140,14 +138,14 @@ pub fn verify_assignments(names: &[Person], assignment_pairs: &[Assignment]) -> 
 }
 
 pub fn read_csv(file_path: &PathBuf) -> Vec<Vec<String>> {
-    let mut names: Vec<Vec<String>> = [].to_vec();
+    let mut names: Vec<Vec<String>> = Vec::new();
 
-    let file = File::open(file_path).unwrap();
+    let file = File::open(file_path).expect("Could not open CSV file");
     let mut rdr = csv::Reader::from_reader(file);
     // Loop over each "record", or row in the CSV file
     for result in rdr.records() {
         let record = result.expect("Error reading a record from a CSV file");
-        let mut family_vec_strings: Vec<String> = [].to_vec();
+        let mut family_vec_strings: Vec<String> = Vec::new();
         for name in record.iter() {
             if name != "" {
                 family_vec_strings.push(name.to_string());
@@ -160,17 +158,17 @@ pub fn read_csv(file_path: &PathBuf) -> Vec<Vec<String>> {
 }
 
 pub fn make_persons(families: Vec<Vec<String>>) -> Vec<Person> {
-    let mut flat_names: Vec<Person> = vec![];
+    let mut persons: Vec<Person> = Vec::new();
 
     for (number, family) in families.iter().enumerate() {
         for name in family {
-            flat_names.push(Person {
+            persons.push(Person {
                 name: name.to_string(),
                 family_number: Some(number),
             });
         }
     }
-    flat_names
+    persons
 }
 
 pub fn shuffle_persons(mut v: Vec<Person>) -> Vec<Person> {

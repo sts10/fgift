@@ -35,8 +35,8 @@ struct Opt {
 fn main() {
     let opt = Opt::from_args();
     let names: Vec<Vec<String>> = read_csv(&opt.names_file);
-    let names = make_persons(names);
-    let names = shuffle_persons(names);
+    let persons = make_persons(names);
+    let persons = shuffle_persons(persons);
 
     // I should keep this as an Option<Vec<String>>, rather than pass an empty Vec to
     // find_gift_givers function
@@ -59,11 +59,11 @@ fn main() {
     println!();
     // loop until we get a good solution
     loop {
-        match find_gift_givers(&names, &previous_years_giving, &special_requests) {
+        match find_gift_givers(&persons, &previous_years_giving, &special_requests) {
             Some(assignment_pairs) => {
                 // Verify that everyone gives and everyone receives
-                if verify_assignments(&names, &assignment_pairs) {
-                    println!("Assignments have been verified ({} names, {} assignment pairs, and all give and all receive)\n", names.len(), assignment_pairs.len());
+                if verify_assignments(&persons, &assignment_pairs) {
+                    println!("Assignments have been verified ({} persons, {} assignment pairs, and all give and all receive)\n", persons.len(), assignment_pairs.len());
                 } else {
                     panic!(
                         "Was unable to verify that everyone gives and receives. Something wrong with inputs or code."

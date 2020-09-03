@@ -40,3 +40,22 @@ pub fn _get_file_path() -> String {
         .to_string()
 }
 ```
+
+```rust
+// here's the old special request handler logic
+for request in special_requests {
+    let request_vec: Vec<&str> = request.split(" gives to ").collect();
+    let request_giver_name = request_vec[0].to_string();
+    let request_receiver_name = request_vec[1].to_string();
+
+    let giver = Person {
+        name: request_giver_name,
+        family_number: None,
+    };
+    let receiver = Person {
+        name: request_receiver_name,
+        family_number: None,
+    };
+    new_assignments.push(Assignment { giver, receiver });
+}
+```
