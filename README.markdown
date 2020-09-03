@@ -58,7 +58,7 @@ The gift assignments are randomized, _except_, as you can see, for example, Clai
 
 ## Installation 
 
-1. [Install Rust](https://www.rust-lang.org/tools/install) if you haven't already (2018 edition, version 1.45 most recently)
+1. [Install Rust](https://www.rust-lang.org/tools/install) if you haven't already (2018 edition, version 1.46 most recently)
 2. `cargo install --git https://github.com/sts10/fgift`
 
 You should now be able to run `fgift` from any where in the terminal. Run `fgift --help` for help.
