@@ -70,8 +70,7 @@ fn main() {
                     );
                 }
                 // Sort list alphabetically to cover evidence of special requests
-                let assignment_pairs = sort_assignments_alphabetically(assignment_pairs);
-                for assignment in assignment_pairs {
+                for assignment in sort_assignments_alphabetically(assignment_pairs) {
                     write_to(
                         &output_dest,
                         format!(

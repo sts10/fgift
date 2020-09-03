@@ -24,10 +24,10 @@ pub fn find_gift_givers(
     previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
     special_requests: &[String],
 ) -> Option<Vec<Assignment>> {
-    let mut assignment_pairs: Vec<Assignment> = [].to_vec();
+    let mut assignment_pairs: Vec<Assignment> = Vec::new();
 
     // First, handle special requests
-    assignment_pairs = make_special_requests(special_requests, assignment_pairs);
+    assignment_pairs = add_special_assignments(special_requests, assignment_pairs);
 
     // Now do the rest of the random assignments, with consideration for avoiding previous years'
     // assignments
@@ -55,7 +55,7 @@ pub fn find_gift_givers(
     Some(assignment_pairs)
 }
 
-fn make_special_requests(
+fn add_special_assignments(
     special_requests: &[String],
     existing_assignment_pairs: Vec<Assignment>,
 ) -> Vec<Assignment> {
@@ -83,7 +83,7 @@ fn make_special_requests(
 fn find_receiver_for(
     giver: &Person,
     names: &[Person],
-    existing_assignment_pairs: &Vec<Assignment>,
+    existing_assignment_pairs: &[Assignment],
     previous_years_giving: &[String],
 ) -> Option<Person> {
     let mut rng = thread_rng();
@@ -116,6 +116,7 @@ fn find_receiver_for(
             continue;
         }
     }
+    // Unable to find a receiver for this giver. Return None.
     None
 }
 
@@ -124,16 +125,13 @@ pub fn verify_assignments(names: &[Person], assignment_pairs: &[Assignment]) -> 
         return false;
     }
     for name in names {
-        let mut gives: bool = false;
-        let mut receives: bool = false;
-        for assignment in assignment_pairs {
-            if name == &assignment.giver {
-                gives = true;
-            }
-            if name == &assignment.receiver {
-                receives = true;
-            }
-        }
+        // look through assignments to make sure this name gives to someone...
+        let gives: bool = assignment_pairs.iter().any(|pair| &pair.giver == name);
+        // and receives from someone
+        let receives: bool = assignment_pairs.iter().any(|pair| &pair.receiver == name);
+
+        // If we at any point have a name that doesn't give or doesn't receive
+        // we know this is a bad and unverified list of assignments
         if !gives || !receives {
             return false;
         }
@@ -141,24 +139,17 @@ pub fn verify_assignments(names: &[Person], assignment_pairs: &[Assignment]) -> 
     true
 }
 
-pub fn get_file_path() -> String {
-    let file_path = gets().unwrap();
-    let file_path = file_path.trim_matches(|c| c == '\'' || c == ' ');
-    file_path.to_string()
-}
-
 pub fn read_csv(file_path: &PathBuf) -> Vec<Vec<String>> {
     let mut names: Vec<Vec<String>> = [].to_vec();
 
     let file = File::open(file_path).unwrap();
     let mut rdr = csv::Reader::from_reader(file);
-    // Loop over each record.
+    // Loop over each "record", or row in the CSV file
     for result in rdr.records() {
-        // An error may occur, so abort the program in an unfriendly way.
-        let record = result.expect("a CSV record");
+        let record = result.expect("Error reading a record from a CSV file");
         let mut family_vec_strings: Vec<String> = [].to_vec();
         for name in record.iter() {
-            if name.len() > 1 {
+            if name != "" {
                 family_vec_strings.push(name.to_string());
             }
         }
@@ -192,15 +183,6 @@ pub fn sort_assignments_alphabetically(mut assignments: Vec<Assignment>) -> Vec<
     assignments
         .sort_by(|assignment1, assignment2| assignment1.giver.name.cmp(&assignment2.giver.name));
     assignments
-}
-
-// helper functions (also in sts10/eyeoh)
-pub fn gets() -> io::Result<String> {
-    let mut input = String::new();
-    match io::stdin().read_line(&mut input) {
-        Ok(_n) => Ok(input.trim_end_matches('\n').to_string()),
-        Err(error) => Err(error),
-    }
 }
 
 pub fn read_by_line(file_path: &PathBuf) -> io::Result<Vec<String>> {

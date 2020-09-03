@@ -28,3 +28,15 @@ fn _shuffle_families(families: Vec<Vec<String>>) -> Vec<Vec<String>> {
 
 
 ```
+
+```rust
+pub fn _get_file_path() -> String {
+    // let file_path = gets().unwrap();
+    // let file_path = file_path.trim_matches(|c| c == '\'' || c == ' ');
+    // file_path.to_string()
+    gets()
+        .unwrap()
+        .trim_matches(|c| c == '\'' || c == ' ')
+        .to_string()
+}
+```
