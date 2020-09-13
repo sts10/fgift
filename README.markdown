@@ -54,7 +54,7 @@ Mitchell gives to Luke
 Lily gives to Claire
 ```
 
-The gift assignments are randomized, _except_, as you can see, for example, Claire does not give to Phil, Haley, Alex, or Luke, since they are in the same immediate family. This information -- that Claire is in an immediate family with Phil, Haley, Alex, and Luke -- is established (or encoded) in the inputted CSV file, by the fact that all those names are in the same row. 
+The gift assignments are randomized, _except_ that no one gives to anyone in their immediate family. For example, Claire does not give to Phil, Haley, Alex, or Luke, since they are in the same immediate family. This information -- that Claire is in an immediate family with Phil, Haley, Alex, and Luke -- is established (or encoded) in the inputted CSV file, by the fact that all those names are in the same row. 
 
 ## Installation 
 
