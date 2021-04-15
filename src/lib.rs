@@ -5,7 +5,7 @@ use std::fs::File;
 use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
-use std::path::PathBuf;
+use std::path::Path;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Person {
@@ -155,7 +155,7 @@ pub fn verify_assignments(persons: &[Person], assignment_pairs: &[Assignment]) -
     true
 }
 
-pub fn read_csv(file_path: &PathBuf) -> Vec<Vec<String>> {
+pub fn read_csv(file_path: &Path) -> Vec<Vec<String>> {
     let mut names: Vec<Vec<String>> = Vec::new();
 
     let file = File::open(file_path).expect("Could not open CSV file");
@@ -165,7 +165,7 @@ pub fn read_csv(file_path: &PathBuf) -> Vec<Vec<String>> {
         let record = result.expect("Error reading a record from a CSV file");
         let mut family_vec_strings: Vec<String> = Vec::new();
         for name in record.iter() {
-            if name != "" {
+            if !name.is_empty() {
                 family_vec_strings.push(name.to_string());
             }
         }
@@ -201,7 +201,7 @@ pub fn sort_assignments_alphabetically(mut assignments: Vec<Assignment>) -> Vec<
     assignments
 }
 
-pub fn read_by_line(file_path: &PathBuf) -> io::Result<Vec<String>> {
+pub fn read_by_line(file_path: &Path) -> io::Result<Vec<String>> {
     let mut vec = Vec::new();
     let f = match File::open(file_path) {
         Ok(res) => res,
