@@ -68,7 +68,7 @@ dependencies = [
 
 [[package]]
 name = "fgift"
-version = "0.2.54"
+version = "0.2.56"
 dependencies = [
  "csv",
  "rand",
