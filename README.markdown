@@ -73,7 +73,9 @@ To upgrade fgift, run `cargo install --force --git https://github.com/sts10/fgif
 
 - `fgift -p=tests/test-files/previous-years-giving-list-test.txt -o=this-years-assignments.txt tests/test-files/test-names.csv` Creates gift assignments without repeating any assignments found in `previous-years-giving-list-test.txt`. Writes created assignments to text file `this-years-giving.txt` instead of to the terminal.
 
-- `fgift -p=tests/test-files/previous-years-giving-list-test.txt -s=tests/test-files/special-requests-test.txt tests/test-files/test-names.csv` Creates gift assignments that respects special requests made in `special-requests-test.txt` file, then avoids repeating any assignments found in `previous-years-giving-list-test.txt`.
+- `fgift -p=tests/test-files/previous-years-giving-list-test.txt tests/test-files/test-names.csv > this-years-assignments.txt` Same as above; just uses `>` to write to an output file.
+
+- `fgift -p tests/test-files/previous-years-giving-list-test.txt -s tests/test-files/special-requests-test.txt tests/test-files/test-names.csv` Creates gift assignments that respects special requests made in `special-requests-test.txt` file, then avoids repeating any assignments found in `previous-years-giving-list-test.txt`.
 
 ## Options
 
