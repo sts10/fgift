@@ -64,7 +64,7 @@ fn main() {
                 // Verify that everyone gives and everyone receives
                 assert!(verify_assignments(&persons, &assignment_pairs), "Was unable to verify that everyone gives and receives. Something wrong with inputs or code.");
                 // If we made it here, we know the assignments were verified as good
-                println!("Assignments have been verified ({} persons, {} assignment pairs, and all give and all receive)\n", persons.len(), assignment_pairs.len());
+                eprintln!("Assignments have been verified ({} persons, {} assignment pairs, and all give and all receive)\n", persons.len(), assignment_pairs.len());
 
                 // Sort list alphabetically to cover evidence of special requests
                 for assignment in sort_assignments_alphabetically(assignment_pairs) {
@@ -81,11 +81,11 @@ fn main() {
             }
             None => {
                 if opt.verbose {
-                    println!("\n------------------\nGot a bad solution. Going to try again\n------------------\n");
+                    eprintln!("\n------------------\nGot a bad solution. Going to try again\n------------------\n");
                 }
                 continue;
             }
         };
     }
-    println!("\n------------------\nDone!");
+    eprintln!("------------------\nDone!");
 }
