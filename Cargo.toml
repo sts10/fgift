@@ -2,7 +2,7 @@
 name = "fgift"
 version = "0.2.61"
 authors = ["Sam Schlinkert <sschlinkert@gmail.com>"]
-edition = "2021"
+edition = "2018"
 
 [dependencies]
 rand = "0.7"
