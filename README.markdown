@@ -8,20 +8,29 @@ Obviously you can substitute the concept of "families" for any small groups of p
 
 ```text
 USAGE:
-    fgift [FLAGS] [OPTIONS] <NAMES CSV FILE>
-
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
-    -v, --verbose    Prints verbose output, including parameters as received
-
-OPTIONS:
-    -o, --output <output>                    Print assignments to a file, rather than to the terminal
-    -p, --previous <previous_years_file>     Provide file with previous years giving
-    -s, --special <special_requests_file>    Provide file with special requests (assignments that must be made)
+    fgift [OPTIONS] <NAMES CSV FILE>
 
 ARGS:
     <NAMES CSV FILE>    CSV of family names
+
+OPTIONS:
+    -h, --help
+            Print help information
+
+    -o, --output <OUTPUT>
+            Print assignments to a file, rather than to the terminal
+
+    -p, --previous <PREVIOUS_YEARS_FILE>
+            Provide file with previous years giving
+
+    -s, --special <SPECIAL_REQUESTS_FILE>
+            Provide file with special requests (assignments that must be made)
+
+    -v, --verbose
+            Prints verbose output, including parameters as received
+
+    -V, --version
+            Print version information
 ```
 
 ## Example input CSV
