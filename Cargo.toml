@@ -7,4 +7,4 @@ edition = "2021"
 [dependencies]
 rand = "0.7"
 csv = "1"
-structopt = "0.3"
+clap = { version = "3.0.14", features = ["derive"] }

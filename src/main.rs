@@ -1,39 +1,37 @@
-extern crate structopt;
+use clap::Parser;
 use fgift::*;
 use std::path::PathBuf;
-use structopt::StructOpt;
-
 pub mod writer;
 use crate::writer::create_destination;
 use crate::writer::write_to;
 
-/// fgift: Family Gift List Maker
-#[derive(StructOpt, Debug)]
-#[structopt(name = "fgift")]
-struct Opt {
+/// Family Gift List Maker
+#[derive(Parser, Debug)]
+#[clap(version, name = "fgift")]
+struct Args {
     /// Prints verbose output, including parameters as received
-    #[structopt(short = "v", long = "verbose")]
+    #[clap(short = 'v', long = "verbose")]
     verbose: bool,
 
     /// Provide file with previous years giving
-    #[structopt(short = "p", long = "previous", parse(from_os_str))]
+    #[clap(short = 'p', long = "previous", parse(from_os_str))]
     previous_years_file: Option<PathBuf>,
 
     /// Provide file with special requests (assignments that must be made)
-    #[structopt(short = "s", long = "special", parse(from_os_str))]
+    #[clap(short = 's', long = "special", parse(from_os_str))]
     special_requests_file: Option<PathBuf>,
 
     /// Print assignments to a file, rather than to the terminal
-    #[structopt(short = "o", long = "output")]
+    #[clap(short = 'o', long = "output")]
     output: Option<String>,
 
     /// CSV of family names
-    #[structopt(name = "NAMES CSV FILE", parse(from_os_str))]
+    #[clap(name = "NAMES CSV FILE", parse(from_os_str))]
     names_file: PathBuf,
 }
 
 fn main() {
-    let opt = Opt::from_args();
+    let opt = Args::parse();
     let names: Vec<Vec<String>> = read_csv(&opt.names_file);
     let persons = make_persons(names);
     let persons = shuffle_persons(persons);
@@ -53,7 +51,7 @@ fn main() {
     let output_dest = create_destination(&opt.output);
 
     if opt.verbose {
-        println!("Parameters received: {:?}", opt);
+        eprintln!("Parameters received: {:?}", opt);
     }
 
     println!();
