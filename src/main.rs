@@ -38,13 +38,15 @@ fn main() {
 
     let special_requests: Option<Vec<String>> =
         opt.special_requests_file.as_ref().map(|file_path| {
-            read_by_line(&file_path).expect("Unable to read a line in the special requests file.")
+            read_by_line(file_path).expect("Unable to read a line in the special requests file.")
         });
 
     // I should probably make this an Option too, but it's more cumbersome than with
     // special_requests
     let previous_years_giving: Vec<String> = match &opt.previous_years_file {
-        Some(file_path) => read_by_line(&file_path).unwrap(),
+        Some(file_path) => {
+            read_by_line(file_path).expect("Unable to read a line in the previous_years_file")
+        }
         None => vec![],
     };
 

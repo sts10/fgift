@@ -26,7 +26,7 @@ pub fn find_gift_givers(
 ) -> Option<Vec<Assignment>> {
     // First, handle special requests
     let assignment_pairs_after_special_requests: Vec<Assignment> = match special_requests {
-        Some(requests) => add_special_assignments(persons, &requests, Vec::new()),
+        Some(requests) => add_special_assignments(persons, requests, Vec::new()),
         None => Vec::new(),
     };
     finish_assignments_consider_previous_years(
@@ -53,7 +53,7 @@ fn finish_assignments_consider_previous_years(
 
         // If we're here, we didn't find a special request of who they should give to,
         // so we need to find a receiver for them
-        match find_receiver_for(giver, &persons, &assignment_pairs, previous_years_giving) {
+        match find_receiver_for(giver, persons, &assignment_pairs, previous_years_giving) {
             Some(receiver) => {
                 assignment_pairs.push(Assignment {
                     giver: giver.clone(),
