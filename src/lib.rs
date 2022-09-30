@@ -105,7 +105,8 @@ fn find_receiver_for(
     let mut potential_receiver: Person;
 
     for _n in 0..1000 {
-        potential_receiver = persons[rng.gen_range(0, persons.len())].clone();
+        // potential_receiver = persons[rng.gen_range(0..persons.len())].clone();
+        potential_receiver = persons.choose(&mut rng).unwrap().clone();
 
         // What makes a GOOD receiver?
         //   - potential receiver is NOT already receiving
