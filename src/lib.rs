@@ -106,7 +106,11 @@ fn find_receiver_for(
 
     for _n in 0..1000 {
         // potential_receiver = persons[rng.gen_range(0..persons.len())].clone();
-        potential_receiver = persons.choose(&mut rng).unwrap();
+        potential_receiver = match persons.choose(&mut rng) {
+            Some(person) => person,
+            // Something is wrong, maybe persons is empty
+            None => return None,
+        };
 
         // What makes a GOOD receiver?
         //   - potential receiver is NOT already receiving
