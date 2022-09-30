@@ -1,6 +1,6 @@
 [package]
 name = "fgift"
-version = "0.2.81"
+version = "0.2.82"
 authors = ["Sam Schlinkert <sschlinkert@gmail.com>"]
 edition = "2021"
 

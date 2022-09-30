@@ -13,7 +13,7 @@ pub struct Person {
     pub family_number: Option<usize>,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Assignment {
     pub giver: Person,
     pub receiver: Person,
@@ -102,11 +102,11 @@ fn find_receiver_for(
     previous_years_giving: &[String],
 ) -> Option<Person> {
     let mut rng = thread_rng();
-    let mut potential_receiver: Person;
+    let mut potential_receiver: &Person;
 
     for _n in 0..1000 {
         // potential_receiver = persons[rng.gen_range(0..persons.len())].clone();
-        potential_receiver = persons.choose(&mut rng).unwrap().clone();
+        potential_receiver = persons.choose(&mut rng).unwrap();
 
         // What makes a GOOD receiver?
         //   - potential receiver is NOT already receiving
@@ -116,15 +116,15 @@ fn find_receiver_for(
 
         if !existing_assignment_pairs
             .iter()
-            .any(|pair| pair.receiver == potential_receiver)
-            && &potential_receiver != giver
+            .any(|pair| &pair.receiver == potential_receiver)
+            && potential_receiver != giver
             && giver.family_number != potential_receiver.family_number
             && !previous_years_giving.contains(&format!(
                 "{} gives to {}",
                 giver.name, potential_receiver.name
             ))
         {
-            return Some(potential_receiver);
+            return Some(potential_receiver.clone());
         } else {
             // return to top of loop and randomly choose another potential_receiver
             continue;
