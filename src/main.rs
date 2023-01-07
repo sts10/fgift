@@ -10,8 +10,8 @@ use crate::writer::write_to;
 #[clap(version, name = "fgift")]
 struct Args {
     /// Prints verbose output, including parameters as received
-    #[clap(short = 'v', long = "verbose")]
-    verbose: bool,
+    #[clap(short = 'v', long = "verbose", action = clap::ArgAction::Count)]
+    verbose: u8,
 
     /// Provide file with previous years giving
     #[clap(short = 'p', long = "previous")]
@@ -52,7 +52,7 @@ fn main() {
 
     let output_dest = create_destination(&opt.output);
 
-    if opt.verbose {
+    if opt.verbose >= 2 {
         println!("Parameters received: {:?}", opt);
     }
 
@@ -61,10 +61,14 @@ fn main() {
     loop {
         match find_gift_givers(&persons, &previous_years_giving, &special_requests) {
             Some(assignment_pairs) => {
-                // Verify that everyone gives and everyone receives
+                // Verify that everyone gives and everyone receives.
+                // This line will panic the entire program if assignments fail verification,
+                // which is the desired result in this case.
                 assert!(verify_assignments(&persons, &assignment_pairs), "Was unable to verify that everyone gives and receives. Something wrong with inputs or code.");
                 // If we made it here, we know the assignments were verified as good
-                println!("Assignments have been verified ({} persons, {} assignment pairs, and all give and all receive)\n", persons.len(), assignment_pairs.len());
+                if opt.verbose >= 1 {
+                    println!("Assignments have been verified ({} persons, {} assignment pairs, and all give and all receive)\n", persons.len(), assignment_pairs.len());
+                }
 
                 // Sort list alphabetically to cover evidence of special requests
                 for assignment in sort_assignments_alphabetically(assignment_pairs) {
@@ -80,14 +84,14 @@ fn main() {
                 break;
             }
             None => {
-                if opt.verbose {
+                if opt.verbose >= 2 {
                     eprintln!("\n------------------\nGot a bad solution. Going to try again\n------------------\n");
                 }
                 continue;
             }
         };
     }
-    if opt.verbose {
+    if opt.verbose >= 2 {
         println!("------------------\nDone!");
     }
 }
