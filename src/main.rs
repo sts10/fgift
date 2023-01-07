@@ -53,7 +53,7 @@ fn main() {
     let output_dest = create_destination(&opt.output);
 
     if opt.verbose {
-        eprintln!("Parameters received: {:?}", opt);
+        println!("Parameters received: {:?}", opt);
     }
 
     println!();
@@ -64,7 +64,7 @@ fn main() {
                 // Verify that everyone gives and everyone receives
                 assert!(verify_assignments(&persons, &assignment_pairs), "Was unable to verify that everyone gives and receives. Something wrong with inputs or code.");
                 // If we made it here, we know the assignments were verified as good
-                eprintln!("Assignments have been verified ({} persons, {} assignment pairs, and all give and all receive)\n", persons.len(), assignment_pairs.len());
+                println!("Assignments have been verified ({} persons, {} assignment pairs, and all give and all receive)\n", persons.len(), assignment_pairs.len());
 
                 // Sort list alphabetically to cover evidence of special requests
                 for assignment in sort_assignments_alphabetically(assignment_pairs) {
@@ -87,5 +87,7 @@ fn main() {
             }
         };
     }
-    eprintln!("------------------\nDone!");
+    if opt.verbose {
+        println!("------------------\nDone!");
+    }
 }

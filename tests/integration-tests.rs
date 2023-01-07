@@ -236,7 +236,7 @@ mod integration_tests {
     }
 
     fn look_up_number_of_potential_receivers(giver_name: &str) -> usize {
-        // hard code this I think?!
+        // Fine for this to be hard-coded, since it's a test
         if giver_name == "Claire".to_string() {
             6
         } else if giver_name == "Phil".to_string() {
@@ -248,20 +248,18 @@ mod integration_tests {
         } else {
             0
         }
-
-        // match giver_name {
-        //     ("Claire".to_string()) => 7,
-        //     "Manny".to_string() => 5,
-        // }
     }
 
     use std::collections::HashMap;
     fn individual_giver_chi_test(giver: Person, upper_tail_critical: f64) -> bool {
-        // run 1000 trials to get a Vector of observed values
+        // run 10,000 trials to get a Vector of observed values
+        // We need 10,000 runs rather than just 1,000 since this is a
+        // more statstically varied test.
+        let n = 10000; // number of trials to run
 
         let mut observed_receivers_hashmap: HashMap<Person, usize> = HashMap::new();
 
-        for _ in 0..1000 {
+        for _ in 0..n {
             let assignment_pairs =
                 make_a_list(PathBuf::from("tests/test-files/test-names.csv"), None, None);
             for assignment in assignment_pairs {
@@ -287,11 +285,11 @@ mod integration_tests {
             let observed_count = observed_receiver_name_and_count.1;
 
             let expected_count: f64 =
-                1000.0 / (look_up_number_of_potential_receivers(&giver.name) as f64);
+                n as f64 / (look_up_number_of_potential_receivers(&giver.name) as f64);
 
             println!(
-                "We expected {} to give to {} {} times out of 1000; Observed: {} times out of 1000",
-                giver.name, receiver.name, expected_count, observed_count
+                "We expected {} to give to {} {} times out of {}; Observed: {} times out of {}",
+                giver.name, receiver.name, expected_count, n, observed_count, n
             );
 
             chi_squared_statistic = chi_squared_statistic
@@ -327,7 +325,7 @@ mod integration_tests {
     }
 
     #[test]
-    #[ignore] // always fails
+    #[ignore] // always fails, I think due to family size logic?
     fn chi_squared_test_cameron() {
         let cameron = Person {
             name: "Cameron".to_string(),
@@ -337,7 +335,7 @@ mod integration_tests {
     }
 
     #[test]
-    #[ignore] // always fails
+    #[ignore] // always fails, I think due to family size logic?
     fn chi_squared_test_manny() {
         let manny = Person {
             name: "Manny".to_string(),
