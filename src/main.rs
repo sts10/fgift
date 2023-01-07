@@ -14,11 +14,11 @@ struct Args {
     verbose: bool,
 
     /// Provide file with previous years giving
-    #[clap(short = 'p', long = "previous", parse(from_os_str))]
+    #[clap(short = 'p', long = "previous")]
     previous_years_file: Option<PathBuf>,
 
     /// Provide file with special requests (assignments that must be made)
-    #[clap(short = 's', long = "special", parse(from_os_str))]
+    #[clap(short = 's', long = "special")]
     special_requests_file: Option<PathBuf>,
 
     /// Print assignments to a file, rather than to the terminal
@@ -26,7 +26,7 @@ struct Args {
     output: Option<String>,
 
     /// CSV of family names
-    #[clap(name = "NAMES CSV FILE", parse(from_os_str))]
+    #[clap(name = "NAMES CSV FILE")]
     names_file: PathBuf,
 }
 
