@@ -9,8 +9,8 @@ use crate::writer::write_to;
 #[derive(Parser, Debug)]
 #[clap(version, name = "fgift")]
 struct Args {
-    /// Prints verbose output, including parameters as received. Can except one or
-    /// two count.
+    /// Prints verbose output, including parameters as received. Can
+    /// accept either one or two count.
     #[clap(short = 'v', long = "verbose", action = clap::ArgAction::Count)]
     verbose: u8,
 
