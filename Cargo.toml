@@ -1,11 +1,10 @@
 [package]
 name = "fgift"
-version = "0.2.87"
+version = "0.2.88"
 authors = ["Sam Schlinkert <sschlinkert@gmail.com>"]
 edition = "2021"
 
 [dependencies]
 rand = "0.8.5"
-# csv = "1.1"
 csv = "1.2.1"
 clap = { version = "4.2.2", features = ["derive"] }
