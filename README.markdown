@@ -14,13 +14,11 @@ Arguments:
 
 Options:
   -v, --verbose...
-          Prints verbose output, including parameters as received. 
-          Can accept either one or two count
+          Prints verbose output, including parameters as received. Can accept either one or two count
   -p, --previous <PREVIOUS_YEARS_FILE>
           Provide file with previous years giving
   -s, --special <SPECIAL_REQUESTS_FILE>
-          Provide file with special requests (assignments that must 
-          be made)
+          Provide file with special requests (assignments that must be made)
   -o, --output <OUTPUT>
           Print assignments to a file, rather than to the terminal
   -h, --help
