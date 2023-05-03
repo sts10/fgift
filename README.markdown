@@ -14,7 +14,8 @@ Arguments:
 
 Options:
   -v, --verbose...
-          Prints verbose output, including parameters as received. Can accept either one or two count
+          Prints verbose output, including parameters as received. Can accept either 
+          one or two count
   -p, --previous <PREVIOUS_YEARS_FILE>
           Provide file with previous years giving
   -s, --special <SPECIAL_REQUESTS_FILE>
