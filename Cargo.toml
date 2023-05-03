@@ -1,8 +1,10 @@
 [package]
 name = "fgift"
-version = "0.2.89"
+version = "0.2.90"
 authors = ["Sam Schlinkert <sschlinkert@gmail.com>"]
 edition = "2021"
+license = "MPL-2.0"
+repository = "https://github.com/sts10/fgift"
 
 [dependencies]
 rand = "0.8.5"

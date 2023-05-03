@@ -161,7 +161,7 @@ dependencies = [
 
 [[package]]
 name = "fgift"
-version = "0.2.89"
+version = "0.2.90"
 dependencies = [
  "clap",
  "csv",
