@@ -8,5 +8,7 @@ personal-data/
 personal-data/*
 /personal-data
 scrap_code.markdown
+scrap-code/
+scrap-code/*
 justfile
 .justfile
