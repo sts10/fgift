@@ -97,4 +97,4 @@ Generally I'd recommend creating and editing the CSV files in a spreadsheet edit
 
 ## Notes on randomness
 
-For an investigation into how "random" the selections this programs makes, see [Notes on randomness document](./notes-on-randomness.markdown).
+For an investigation into how "random" the selections this programs makes, see ["Notes on Randomness" document](./notes-on-randomness.markdown).
