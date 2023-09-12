@@ -63,13 +63,19 @@ The gift assignments are randomized, _except_ that no one gives to anyone in the
 ## Installation 
 
 1. [Install Rust](https://www.rust-lang.org/tools/install) if you haven't already
-2. Install fgift: `cargo install --git https://github.com/sts10/fgift --branch main`
+2. Install FGift: `cargo install --git https://github.com/sts10/fgift --branch main`
 
 You should now be able to run `fgift` from anywhere in your terminal. Run `fgift --help` for help.
 
-To upgrade fgift, run `cargo install --force --git https://github.com/sts10/fgift --branch main`. 
+To **upgrade** your installation of FGift, run `cargo install --force --git https://github.com/sts10/fgift --branch main`. 
 
 Alternatively, if you don't want to install Rust and Cargo, I periodically publish Releases to GitHub, each with an executable file.
+
+### Uninstalling FGift and Rust
+
+To uninstall FGift, run: `cargo uninstall fgift`
+
+To uninstall Rust/`cargo` (if you install Rust solely to run FGift, for example), as of 2023, run: `rustup self uninstall` ([source](https://www.rust-lang.org/tools/install)).
 
 ## Examples
 
