@@ -159,7 +159,7 @@ mod integration_tests {
     }
 
     #[test]
-    fn no_assignments_from_previous_years_are_given() {
+    fn no_assignments_from_previous_years_are_given_general() {
         let previous_years_file =
             PathBuf::from("tests/test-files/previous-years-giving-list-test.txt");
 
@@ -176,11 +176,50 @@ mod integration_tests {
 
             for assignment in assignments {
                 // if we ever have a match with a previous year, test fails.
-                // so `assert` that there is no match ever time. If it ever fails, test fails.
+                // so `assert` that there is no match in ANY loop iteration.
+                // If it ever fails, this "whole" test fails.
                 assert!(!previous_years_giving.contains(&format!(
                     "{} gives to {}",
                     assignment.giver.name, assignment.receiver.name
-                )))
+                )));
+            }
+        }
+    }
+
+    #[test]
+    fn no_assignments_from_previous_years_are_given_specific() {
+        let previous_years_file =
+            PathBuf::from("tests/test-files/previous-years-giving-list-test.txt");
+
+        let previous_years_giving: Vec<String> = read_by_line(&previous_years_file).unwrap();
+        // Make sure we read some previous_years_giving from the test file
+        assert!(previous_years_giving.len() >= 26);
+
+        // Now we construct a "forbidden assignment," i.e. own that occurred in a previous year, as
+        // noted in `tests/test-files/previous-years-giving-list-test.txt`
+        let claire = Person {
+            name: "Claire".to_string(),
+            family_number: Some(0),
+        };
+        let jay = Person {
+            name: "Jay".to_string(),
+            family_number: Some(2),
+        };
+        let forbidden_assignment_example = Assignment {
+            giver: claire,
+            receiver: jay,
+        };
+        // Now we run 1,000 runs, making sure the forbidden assignment is never made.
+        for _ in 0..1000 {
+            let assignments = make_a_list(
+                PathBuf::from("tests/test-files/test-names.csv"),
+                Some(&previous_years_file),
+                None,
+            );
+
+            // Check every assignment
+            for assignment in assignments {
+                assert!(assignment != forbidden_assignment_example);
             }
         }
     }
