@@ -163,11 +163,9 @@ mod integration_tests {
         let previous_years_file =
             PathBuf::from("tests/test-files/previous-years-giving-list-test.txt");
 
-        // let previous_years_giving: Vec<String> = match previous_years_file {
-        //     Some(file_path) => read_by_line(file_path).unwrap(),
-        //     None => vec![],
-        // };
         let previous_years_giving: Vec<String> = read_by_line(&previous_years_file).unwrap();
+        // Make sure we read some previous_years_giving from the test file
+        assert!(previous_years_giving.len() >= 26);
 
         for _ in 0..1000 {
             let assignments = make_a_list(
