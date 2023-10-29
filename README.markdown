@@ -71,6 +71,8 @@ To **upgrade** your installation of FGift, run `cargo install --force --git http
 
 Alternatively, if you don't want to install Rust and Cargo, I periodically publish Releases to GitHub, each with an executable file.
 
+To install the executable on a Linux/macOS machine, download the `fgift` executable and move it to somewhere in your `$PATH`, like `$HOME/.local/bin` (you can do this on the command line with something like `mv ~/Downloads/fgift ~/.local/bin/`). You may also need to give the executable permissions with something like `chmod +x ~/.local/bin/fgift`.
+
 ### Uninstalling FGift and Rust
 
 To uninstall FGift, run: `cargo uninstall fgift`
