@@ -1,3 +1,7 @@
+# v0.2.100
+
+Upgrade cargo-dist version to 0.4.2.
+
 # v0.2.99 
 
 Add SHELL script installer option to cargo-dist configuration.
