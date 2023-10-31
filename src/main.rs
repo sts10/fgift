@@ -14,11 +14,11 @@ struct Args {
     #[clap(short = 'v', long = "verbose", action = clap::ArgAction::Count)]
     verbose: u8,
 
-    /// Provide file with previous years giving
+    /// Optionally provide file with previous years giving
     #[clap(short = 'p', long = "previous")]
     previous_years_file: Option<PathBuf>,
 
-    /// Provide file with special requests (assignments that must be made)
+    /// Optionally provide file with special requests (assignments that _must_ be made)
     #[clap(short = 's', long = "special")]
     special_requests_file: Option<PathBuf>,
 

@@ -1,5 +1,3 @@
-extern crate csv;
-extern crate rand;
 use rand::prelude::*;
 use std::fs::File;
 use std::io;
