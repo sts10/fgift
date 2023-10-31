@@ -1,6 +1,6 @@
 [package]
 name = "fgift"
-version = "0.2.93"
+version = "0.2.94"
 edition = "2021"
 authors = ["Sam Schlinkert <sschlinkert@gmail.com>"]
 license = "MPL-2.0"
