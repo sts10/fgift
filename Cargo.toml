@@ -1,9 +1,10 @@
 [package]
 name = "fgift"
 version = "0.2.93"
-authors = ["Sam Schlinkert <sschlinkert@gmail.com>"]
 edition = "2021"
+authors = ["Sam Schlinkert <sschlinkert@gmail.com>"]
 license = "MPL-2.0"
+readme = "README.markdown"
 repository = "https://github.com/sts10/fgift"
 
 [dependencies]
