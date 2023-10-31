@@ -1,3 +1,7 @@
+# v0.2.99 
+
+Add SHELL script installer option to cargo-dist configuration.
+
 # v0.2.97 
 
 First release using [cargo-dist](https://opensource.axo.dev/cargo-dist/book/introduction.html). Seems to have gone smoothly.
