@@ -64,7 +64,7 @@ The gift assignments are randomized, _except_ that no one gives to anyone in the
 
 ### Using Rust
 1. [Install Rust](https://www.rust-lang.org/tools/install) if you haven't already
-2. Install FGift: `cargo install --git https://github.com/sts10/fgift --branch main`
+2. Install FGift: `cargo install --git https://github.com/sts10/fgift --locked --branch main`
 
 You should now be able to run `fgift` from anywhere in your terminal. Run `fgift --help` for help.
 
