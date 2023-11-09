@@ -5,6 +5,7 @@ use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::path::Path;
+use std::path::PathBuf;
 
 #[derive(Deserialize, Debug)]
 pub struct Names {
@@ -164,8 +165,28 @@ pub fn verify_assignments(persons: &[Person], assignment_pairs: &[Assignment]) -
     true
 }
 
+pub fn read_file(names_file: &PathBuf) -> Vec<Vec<String>> {
+    if names_file
+        .extension()
+        .expect("Unable to detect file extension of inputted NAMES file")
+        .to_ascii_lowercase()
+        == "csv"
+    {
+        read_csv(names_file)
+    } else if names_file
+        .extension()
+        .expect("Unable to detect file extension of inputted NAMES file")
+        .to_ascii_lowercase()
+        == "json"
+    {
+        read_json(names_file)
+    } else {
+        panic!("Unable to detect file type of Names file. This program requires either a .csv or .json file. Check file extension.");
+    }
+}
+
 /// Read inputted CSV file
-pub fn read_csv(file_path: &Path) -> Vec<Vec<String>> {
+fn read_csv(file_path: &Path) -> Vec<Vec<String>> {
     let mut names: Vec<Vec<String>> = Vec::new();
 
     let file = File::open(file_path).expect("Could not open CSV file");
@@ -186,7 +207,7 @@ pub fn read_csv(file_path: &Path) -> Vec<Vec<String>> {
 }
 
 /// Read inputted JSON file
-pub fn read_json(file_path: &Path) -> Vec<Vec<String>> {
+fn read_json(file_path: &Path) -> Vec<Vec<String>> {
     let file = File::open(file_path).unwrap();
     let reader = BufReader::new(file);
 

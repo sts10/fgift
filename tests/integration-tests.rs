@@ -7,7 +7,7 @@ mod integration_tests {
         previous_years_file: Option<&PathBuf>,
         special_requests_file: Option<&PathBuf>,
     ) -> Vec<Assignment> {
-        let names: Vec<Person> = shuffle_persons(make_persons(read_csv(&names_file_path)));
+        let names: Vec<Person> = shuffle_persons(make_persons(read_file(&names_file_path)));
 
         let previous_years_giving: Vec<String> = match previous_years_file {
             Some(file_path) => read_by_line(&file_path).unwrap(),
@@ -33,9 +33,28 @@ mod integration_tests {
     }
 
     #[test]
+    fn can_read_json_file() {
+        let json_file = PathBuf::from("tests/test-files/test-names.json");
+        let names = read_file(&json_file);
+        assert_eq!(names[0][0], "Claire");
+    }
+
+    #[test]
     fn claire_gives() {
         let assignment_pairs = make_a_list(
             PathBuf::from("tests/test-files/test-names.csv"),
+            Some(&PathBuf::from(
+                "tests/test-files/previous-years-giving-list-test.txt",
+            )),
+            Some(&PathBuf::from("tests/test-files/special-requests-test.txt")),
+        );
+        assert_eq!(assignment_pairs[0].giver.name, "Claire");
+    }
+
+    #[test]
+    fn claire_gives_when_using_a_json_file() {
+        let assignment_pairs = make_a_list(
+            PathBuf::from("tests/test-files/test-names.json"),
             Some(&PathBuf::from(
                 "tests/test-files/previous-years-giving-list-test.txt",
             )),
@@ -130,7 +149,7 @@ mod integration_tests {
     fn everyone_gives_and_receives() {
         let names_file_path = "tests/test-files/test-names.csv";
         let names: Vec<Person> =
-            shuffle_persons(make_persons(read_csv(&PathBuf::from(names_file_path))));
+            shuffle_persons(make_persons(read_file(&PathBuf::from(names_file_path))));
         let previous_years_file =
             PathBuf::from("tests/test-files/previous-years-giving-list-test.txt");
 
