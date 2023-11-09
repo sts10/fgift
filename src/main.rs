@@ -1,3 +1,4 @@
+use crate::reader::read_file;
 use clap::Parser;
 use fgift::*;
 use std::path::PathBuf;

@@ -1,4 +1,5 @@
 mod integration_tests {
+    use fgift::reader::read_file;
     use fgift::*;
     use std::path::PathBuf;
 
