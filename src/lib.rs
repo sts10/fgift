@@ -1,9 +1,15 @@
 use rand::prelude::*;
+use serde::Deserialize;
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::path::Path;
+
+#[derive(Deserialize, Debug)]
+pub struct Names {
+    pub names: Vec<Vec<String>>,
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Person {
@@ -158,6 +164,7 @@ pub fn verify_assignments(persons: &[Person], assignment_pairs: &[Assignment]) -
     true
 }
 
+/// Read inputted CSV file
 pub fn read_csv(file_path: &Path) -> Vec<Vec<String>> {
     let mut names: Vec<Vec<String>> = Vec::new();
 
@@ -176,6 +183,15 @@ pub fn read_csv(file_path: &Path) -> Vec<Vec<String>> {
         names.push(family_vec_strings);
     }
     names
+}
+
+/// Read inputted JSON file
+pub fn read_json(file_path: &Path) -> Vec<Vec<String>> {
+    let file = File::open(file_path).unwrap();
+    let reader = BufReader::new(file);
+
+    let data: Names = serde_json::from_reader(reader).unwrap();
+    data.names
 }
 
 pub fn make_persons(families: Vec<Vec<String>>) -> Vec<Person> {

@@ -26,14 +26,34 @@ struct Args {
     #[clap(short = 'o', long = "output")]
     output: Option<String>,
 
-    /// CSV of family names
-    #[clap(name = "NAMES CSV FILE")]
+    /// File containing names and family information. Can be CSV or JSON file.
+    #[clap(name = "NAMES FILE")]
     names_file: PathBuf,
 }
 
 fn main() {
     let opt = Args::parse();
-    let names: Vec<Vec<String>> = read_csv(&opt.names_file);
+
+    // We can accept CSV or JSON. Figure out which we received by looking at the file extension
+    let names: Vec<Vec<String>> = if opt
+        .names_file
+        .extension()
+        .expect("Unable to detect file extension of inputted NAMES file")
+        .to_ascii_lowercase()
+        == "csv"
+    {
+        read_csv(&opt.names_file)
+    } else if opt
+        .names_file
+        .extension()
+        .expect("Unable to detect file extension of inputted NAMES file")
+        .to_ascii_lowercase()
+        == "json"
+    {
+        read_json(&opt.names_file)
+    } else {
+        panic!("Unable to detect file type of Names file. This program requires either a .csv or .json file. Check file extension.");
+    };
     let persons = make_persons(names);
     let persons = shuffle_persons(persons);
 
