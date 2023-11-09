@@ -5,8 +5,8 @@ use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::path::Path;
-use std::path::PathBuf;
 
+/// This exists just to serialize the inputted JSON file
 #[derive(Deserialize, Debug)]
 pub struct Names {
     pub names: Vec<Vec<String>>,
@@ -26,7 +26,7 @@ pub struct Assignment {
 
 pub fn find_gift_givers(
     persons: &[Person],               // this is like &Vec<Person>
-    previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
+    previous_years_giving: &[String], // and this is like &Vec<String>, but it's a slice
     special_requests: &Option<Vec<String>>,
 ) -> Option<Vec<Assignment>> {
     // First, handle special requests
@@ -165,7 +165,7 @@ pub fn verify_assignments(persons: &[Person], assignment_pairs: &[Assignment]) -
     true
 }
 
-pub fn read_file(names_file: &PathBuf) -> Vec<Vec<String>> {
+pub fn read_file(names_file: &Path) -> Vec<Vec<String>> {
     if names_file
         .extension()
         .expect("Unable to detect file extension of inputted NAMES file")
