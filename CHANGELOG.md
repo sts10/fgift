@@ -1,3 +1,7 @@
+# v0.3.0
+
+Can now accept NAMES file in JSON format. [#5](https://github.com/sts10/fgift/pull/5)
+
 # v0.2.100
 
 Upgrade cargo-dist version to 0.4.2.
