@@ -1,3 +1,4 @@
+pub mod reader;
 use rand::prelude::*;
 use std::fs::File;
 use std::io;
@@ -19,7 +20,7 @@ pub struct Assignment {
 
 pub fn find_gift_givers(
     persons: &[Person],               // this is like &Vec<Person>
-    previous_years_giving: &[String], // and this is like &Vec<String> , but it's a slice I guess
+    previous_years_giving: &[String], // and this is like &Vec<String>, but it's a slice
     special_requests: &Option<Vec<String>>,
 ) -> Option<Vec<Assignment>> {
     // First, handle special requests
@@ -156,26 +157,6 @@ pub fn verify_assignments(persons: &[Person], assignment_pairs: &[Assignment]) -
         }
     }
     true
-}
-
-pub fn read_csv(file_path: &Path) -> Vec<Vec<String>> {
-    let mut names: Vec<Vec<String>> = Vec::new();
-
-    let file = File::open(file_path).expect("Could not open CSV file");
-    let mut rdr = csv::Reader::from_reader(file);
-    // Loop over each "record", or row in the CSV file
-    for result in rdr.records() {
-        let record = result.expect("Error reading a record from a CSV file");
-        let mut family_vec_strings: Vec<String> = Vec::new();
-        for name in record.iter() {
-            if !name.is_empty() {
-                family_vec_strings.push(name.to_string());
-            }
-        }
-
-        names.push(family_vec_strings);
-    }
-    names
 }
 
 pub fn make_persons(families: Vec<Vec<String>>) -> Vec<Person> {

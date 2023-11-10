@@ -1,3 +1,4 @@
+use crate::reader::read_file;
 use clap::Parser;
 use fgift::*;
 use std::path::PathBuf;
@@ -26,14 +27,17 @@ struct Args {
     #[clap(short = 'o', long = "output")]
     output: Option<String>,
 
-    /// CSV of family names
-    #[clap(name = "NAMES CSV FILE")]
+    /// File containing names and family information. Can be CSV or JSON file.
+    #[clap(name = "NAMES FILE")]
     names_file: PathBuf,
 }
 
 fn main() {
     let opt = Args::parse();
-    let names: Vec<Vec<String>> = read_csv(&opt.names_file);
+
+    // We can accept CSV or JSON. Figure out which we received by looking at the file extension
+    let names: Vec<Vec<String>> = read_file(&opt.names_file);
+
     let persons = make_persons(names);
     let persons = shuffle_persons(persons);
 
