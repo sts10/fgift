@@ -31,7 +31,7 @@ Options:
 
 FGift requires a NAMES file that describes the names and groups of the people who will be on your list.
 
-FGift can accept this file in two different formats: CSV or JSON.
+FGift can accept this file in two different formats: CSV or JSON. (FGift uses the file's extension to tell how to read the file, so be sure it is accurate.)
 
 ### Example NAMES file as CSV
 
