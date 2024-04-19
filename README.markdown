@@ -31,7 +31,7 @@ Options:
 
 FGift requires a NAMES file that describes the names and groups of the people who will be on your list.
 
-FGift can accept this file in two different formats: CSV or JSON. (FGift uses the file's extension to tell how to read the file, so be sure it is accurate.)
+FGift can accept this file in two different formats: CSV or JSON. (FGift uses **the file's extension** to determine how to parse the file, so be sure it is accurate: either `.csv` or `.json`.)
 
 ### Example NAMES file as CSV
 
@@ -49,12 +49,12 @@ Jay,Gloria,Manny,,
 (Generally I'd recommend creating and editing the CSV files in a spreadsheet editor like Microsoft Excel or [LibreOffice](https://www.libreoffice.org/) Calc, rather than a text editor like Vim or Sublime Text.)
 
 ### Example NAMES file as JSON
-FGift can also accept a JSON file.
+FGift can also accept a JSON file describing the `names` and their relationships:
 
 ```json
 {
   "names": [
-    ["Claire", "Phil", "Haley", "Alex", "Luke", "fourth kid"],
+    ["Claire", "Phil", "Haley", "Alex", "Luke"],
     ["Cameron", "Mitchell", "Lily"],
     ["Jay", "Gloria", "Manny"]
   ]
@@ -62,7 +62,7 @@ FGift can also accept a JSON file.
 ```
 
 ## What FGift does with this inputted file
-Running `fgift names.csv` or `fgift names.json` gives you an output like this:
+Running either `fgift names.csv` or `fgift names.json` gives you an output like this:
 
 ```
 Claire gives to Cameron
@@ -79,9 +79,9 @@ Mitchell gives to Luke
 Lily gives to Claire
 ```
 
-The gift assignments are randomized, _except_ that no one gives to anyone in their immediate family. For example, Claire does not give to Phil, Haley, Alex, or Luke, since they are in the same immediate family. 
+The gift assignments are randomized, _except_ that no one gives to anyone in their immediate family (the same row or sub-array). For example, Claire does not give to Phil, Haley, Alex, or Luke, since they are in the same immediate family. 
 
-This information -- that Claire is in an immediate family with Phil, Haley, Alex, and Luke -- is established (or encoded) in the inputted file, by the fact that all those names are in the same row. 
+This information -- that Claire is in an immediate family with Phil, Haley, Alex, and Luke -- is established (or encoded) in the inputted file, by the fact that all those names are in the same row or sub-array. 
 
 ## Installation 
 
