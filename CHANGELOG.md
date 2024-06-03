@@ -1,3 +1,8 @@
+# v0.3.4
+
+* Upgrade clap and serde dependencies
+* Sets `cargo-dist` version used to package releases to v0.15.0.
+
 # v0.3.0
 
 Can now accept NAMES file in JSON format. [#5](https://github.com/sts10/fgift/pull/5)
