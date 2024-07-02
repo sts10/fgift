@@ -27,14 +27,13 @@ Options:
           Print version
 ```
 
-## How to format the NAMES file
+## How to create/format the NAMES file properly
 
 FGift requires a NAMES file that describes the names and groups of the people who will be on your list.
 
 FGift can accept this file in two different formats: CSV or JSON. (FGift uses **the file's extension** to determine how to parse the file, so be sure it is accurate: either `.csv` or `.json`.)
 
 ### Example NAMES file as CSV
-
 If you want to create your NAMES file as a CSV, each row needs to be an immediate (nuclear) family.
 
 For example:
@@ -46,7 +45,7 @@ Cameron,Mitchell,Lily,,
 Jay,Gloria,Manny,,
 ```
 
-(Generally I'd recommend creating and editing the CSV files in a spreadsheet editor like Microsoft Excel or [LibreOffice](https://www.libreoffice.org/) Calc, rather than a text editor like Vim or Sublime Text.)
+(Generally I'd recommend creating and editing the CSV file in a spreadsheet editor like Microsoft Excel or [LibreOffice](https://www.libreoffice.org/) Calc, rather than a text editor like Vim or Sublime Text.)
 
 ### Example NAMES file as JSON
 FGift can also accept a JSON file describing the `names` and their relationships:
@@ -61,8 +60,10 @@ FGift can also accept a JSON file describing the `names` and their relationships
 }
 ```
 
-## What FGift does with this inputted file
-Running either `fgift names.csv` or `fgift names.json` gives you an output like this:
+I find this format a bit easier to edit with a text editor.
+
+## What FGift does with this inputted NAMES file
+Now we're ready to run either `fgift names.csv` or `fgift names.json` back on the command line. This should give you an output like this:
 
 ```
 Claire gives to Cameron
@@ -79,19 +80,19 @@ Mitchell gives to Luke
 Lily gives to Claire
 ```
 
-The gift assignments are randomized, _except_ that no one gives to anyone in their immediate family (the same row or sub-array). For example, Claire does not give to Phil, Haley, Alex, or Luke, since they are in the same immediate family. 
+The gift assignments here are randomized, _except_ that no one gives to anyone in their immediate family (the same row or sub-array). For example, Claire does not give to Phil, Haley, Alex, or Luke, since they are in the same immediate family. 
 
 This information -- that Claire is in an immediate family with Phil, Haley, Alex, and Luke -- is established (or encoded) in the inputted file, by the fact that all those names are in the same row or sub-array. 
 
 ## Installation 
 
-### Using Rust
+### Using Cargo (Rust)
 1. [Install Rust](https://www.rust-lang.org/tools/install) if you haven't already
 2. Install FGift: `cargo install --git https://github.com/sts10/fgift --locked --branch main`
 
 You should now be able to run `fgift` from anywhere in your terminal. Run `fgift --help` for help.
 
-To **upgrade** your installation of FGift, run `cargo install --force --git https://github.com/sts10/fgift --branch main`. 
+To **upgrade** this installation of FGift, run the same command again.
 
 ### From a GitHub release
 To download/install the latest release of FGift, see [the GitHub Releases page for further instructions](https://github.com/sts10/fgift/releases).
@@ -100,11 +101,13 @@ In general, to install the executable on a Linux/macOS machine, download the `fg
 
 ### Uninstalling FGift and Rust
 
-To uninstall FGift, run: `cargo uninstall fgift`
+If you installed FGift using Cargo, you can uninstall FGift by running: `cargo uninstall fgift`
 
 To uninstall Rust/`cargo` (if you install Rust solely to run FGift, for example), as of 2023, run: `rustup self uninstall` ([source](https://www.rust-lang.org/tools/install)).
 
-## Examples
+## Using FGift: Examples
+
+FGift is a command-line tool.
 
 - `fgift tests/test-files/test-names.csv` Creates random gift assignments from Names file `test-names.csv`, without assigning anyone to give to members of their immediate family (as denoted by rows in the `test-names.csv` file (see above for examples).
 
@@ -118,7 +121,7 @@ To uninstall Rust/`cargo` (if you install Rust solely to run FGift, for example)
 
 - `fgift -p tests/test-files/previous-years-giving-list-test.txt -s tests/test-files/special-requests-test.txt tests/test-files/test-names.csv` Creates gift assignments that respects special requests made in `special-requests-test.txt` file, then avoids repeating any assignments found in `previous-years-giving-list-test.txt`.
 
-## Options
+## Using FGift: Explanation of options
 
 As shown in the above examples, you can provide (a) a text file of who has given to who in previous years, if you want to avoid reassignments, and/or (b) a file with special requests, which will be fulfilled as specified. 
 
@@ -128,8 +131,8 @@ Both of these optional files should look just like the output text (i.e. "Claire
 
 For an investigation into how "random" the selections this programs makes, see ["Notes on Randomness" document](./notes-on-randomness.markdown).
 
-## How to create a release
+## For developers: How to create a release of FGift
 
 This project uses [cargo-dist](https://opensource.axo.dev/cargo-dist/) to create releases. 
 
-Some of [my personal docs are here](https://sts10.github.io/docs/cargo-dist-tips.html); but basically, `cargo install cargo-dist`. When you're ready to cut a new release, test the current state of the project with `cargo dist build` and `cargo dist plan`. If that went well, create a new git tag that matches the current project version in `Cargo.toml` with `git tag vX.X.X`. Finally, run `git push --tags` to kick off the release process. GitHub will handle it from here -- check your GitHub Releases page in about 5 to 10 minutes.
+Some of [my personal docs are here](https://sts10.github.io/docs/cargo-dist-tips.html); but basically, `cargo install cargo-dist`. When you're ready to cut a new release, test the current state of the project with `cargo dist build` and `cargo dist plan`. If that went well, create a new git tag that matches the current project version in `Cargo.toml` with `git tag vX.X.X`. Finally, run `git push --tags` to kick off the release process. GitHub will handle it from here -- check [this repository's Releases page](https://github.com/sts10/fgift/releases) about 5 to 10 minutes after running `git push --tags` locally.
