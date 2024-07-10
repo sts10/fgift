@@ -14,7 +14,8 @@ Arguments:
 
 Options:
   -v, --verbose...
-          Prints verbose output, including parameters as received. Can accept either one or two count
+          Prints verbose output, including parameters as received. Can accept either one 
+          or two count
   -p, --previous <PREVIOUS_YEARS_FILE>
           Optionally provide file with previous years giving
   -s, --special <SPECIAL_REQUESTS_FILE>
@@ -127,9 +128,12 @@ As shown in the above examples, you can provide (a) a text file of who has given
 
 Both of these optional files should look just like the output text (i.e. "Claire gives to Cameron"), with each assignment on its own line.
 
-## Notes on randomness
+## Notes on randomness in FGift
 
 For an investigation into how "random" the selections this programs makes, see ["Notes on Randomness" document](./notes-on-randomness.markdown).
+
+## Goals
+For personal reasons, one of the goals of this project is for it to work for decades with little to no maintenance. I'm hoping that Rust was a good choice for this, specifically with its "edition" system.
 
 ## For developers: How to create a release of FGift
 
