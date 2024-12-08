@@ -1,6 +1,6 @@
 # FGift: Family Gift List Maker
 
-Takes an input of a CSV or JSON file, describing an extended family, with each line an immediate family. Outputs a list of who should give to who, ensuring that no one gives to anyone in their immediate family, but otherwise selecting randomly. One common use-case for this would be where you need to create "Secret Santa" give assignments.
+This is a command-line tool that takes an input of a CSV or JSON file, describing an (extended) family, with each line an immediate family. It outputs a list of who should give to who, ensuring that no one gives to anyone in their immediate family, but otherwise selecting randomly. One common use-case for this would be where you need to create "Secret Santa" give assignments.
 
 Obviously you can substitute the concept of "families" for any small groups of people, such as teams at your workplace.
 
@@ -81,7 +81,7 @@ Mitchell gives to Luke
 Lily gives to Claire
 ```
 
-The gift assignments here are randomized, _except_ that no one gives to anyone in their immediate family (the same row or sub-array). For example, Claire does not give to Phil, Haley, Alex, or Luke, since they are in the same immediate family. 
+The gift assignments here are randomized, _except_ that no one gives to anyone in their immediate family (the same row or sub-array). For example, Claire does not give to Phil, Haley, Alex, or Luke, since they are in Claire's immediate family. 
 
 This information -- that Claire is in an immediate family with Phil, Haley, Alex, and Luke -- is established (or encoded) in the inputted file, by the fact that all those names are in the same row or sub-array. 
 
@@ -91,12 +91,12 @@ This information -- that Claire is in an immediate family with Phil, Haley, Alex
 1. [Install Rust](https://www.rust-lang.org/tools/install) if you haven't already
 2. Install FGift: `cargo install --git https://github.com/sts10/fgift --locked --branch main`
 
-You should now be able to run `fgift` from anywhere in your terminal. Run `fgift --help` for help.
+You should now be able to run `fgift` from anywhere in your terminal. Run `fgift --help` to check that this is now the case.
 
-To **upgrade** this installation of FGift, run the same command again.
+To **upgrade** this installation of FGift, run the same installation command again.
 
 ### From a GitHub release
-To download/install the latest release of FGift, see [the GitHub Releases page for further instructions](https://github.com/sts10/fgift/releases).
+Alternatively, you can download/install the latest release of FGift. See [the GitHub Releases page for further instructions](https://github.com/sts10/fgift/releases).
 
 In general, to install the executable on a Linux/macOS machine, download the `fgift` executable and move it to somewhere in your `$PATH`, like `$HOME/.local/bin` (you can do this on the command line with something like `mv ~/Downloads/fgift ~/.local/bin/`). You may also need to give the executable permissions with something like `chmod +x ~/.local/bin/fgift`.
 
@@ -104,11 +104,11 @@ In general, to install the executable on a Linux/macOS machine, download the `fg
 
 If you installed FGift using Cargo, you can uninstall FGift by running: `cargo uninstall fgift`
 
-To uninstall Rust/`cargo` (if you install Rust solely to run FGift, for example), as of 2023, run: `rustup self uninstall` ([source](https://www.rust-lang.org/tools/install)).
+To uninstall Rust and `cargo` (if you install Rust solely to run FGift, for example), as of 2023, run: `rustup self uninstall` ([source](https://www.rust-lang.org/tools/install)).
 
 ## Using FGift: Examples
 
-FGift is a command-line tool.
+FGift is a command-line tool. It must also take a NAMES file, but there are other optional arguments it can take.
 
 - `fgift tests/test-files/test-names.csv` Creates random gift assignments from Names file `test-names.csv`, without assigning anyone to give to members of their immediate family (as denoted by rows in the `test-names.csv` file (see above for examples).
 
@@ -129,14 +129,13 @@ As shown in the above examples, you can provide (a) a text file of who has given
 Both of these optional files should look just like the output text (i.e. "Claire gives to Cameron"), with each assignment on its own line.
 
 ## Notes on randomness in FGift
+For an investigation into how "random" the gift assignments this programs makes, see ["Notes on Randomness" document](./notes-on-randomness.markdown).
 
-For an investigation into how "random" the selections this programs makes, see ["Notes on Randomness" document](./notes-on-randomness.markdown).
-
-## Goals
+## Goal of longevity
 For personal reasons, one of the goals of this project is for it to work for decades with little to no maintenance. I'm hoping that Rust was a good choice for this, specifically with its "edition" system.
 
 ## For developers: How to create a release of FGift
 
-This project uses [cargo-dist](https://opensource.axo.dev/cargo-dist/) to create releases. 
+This project uses [cargo-dist](https://opensource.axo.dev/cargo-dist/) (sometimes known as simply "dist") to create releases. 
 
 Some of [my personal docs are here](https://sts10.github.io/docs/cargo-dist-tips.html); but basically, `cargo install cargo-dist`. When you're ready to cut a new release, test the current state of the project with `cargo dist build` and `cargo dist plan`. If that went well, create a new git tag that matches the current project version in `Cargo.toml` with `git tag vX.X.X`. Finally, run `git push --tags` to kick off the release process. GitHub will handle it from here -- check [this repository's Releases page](https://github.com/sts10/fgift/releases) about 5 to 10 minutes after running `git push --tags` locally.
