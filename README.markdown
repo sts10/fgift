@@ -122,9 +122,8 @@ FGift is a command-line tool. It must also take a NAMES file, but there are othe
 
 - `fgift -p tests/test-files/previous-years-giving-list-test.txt -s tests/test-files/special-requests-test.txt tests/test-files/test-names.csv` Creates gift assignments that respects special requests made in `special-requests-test.txt` file, then avoids repeating any assignments found in `previous-years-giving-list-test.txt`.
 
-## Using FGift: Explanation of options
-
-As shown in the above examples, you can provide (a) a text file of who has given to who in previous years, if you want to avoid reassignments, and/or (b) a file with special requests, which will be fulfilled as specified. 
+## Using FGift: Optional files and when to use them
+As shown in the above examples, in addition to the required NAMES file, users can also provide (a) a text file of who has given to who in previous years, if you want to avoid reassignments, and/or (b) a file with special requests, which will be fulfilled as specified. 
 
 Both of these optional files should look just like the output text (i.e. "Claire gives to Cameron"), with each assignment on its own line.
 
@@ -134,8 +133,9 @@ For an investigation into how "random" the gift assignments this programs makes,
 ## Goal of longevity
 For personal reasons, one of the goals of this project is for it to work for decades with little to no maintenance. I'm hoping that Rust was a good choice for this, specifically with its "edition" system.
 
-## For developers: How to create a release of FGift
+Javascript, C++, [Zig](https://ziglang.org/) or even [Hare](https://harelang.org/) would also be interesting choices.
 
+## For developers: How to create a release of FGift
 This project uses [cargo-dist](https://opensource.axo.dev/cargo-dist/) (sometimes known as simply "dist") to create releases. 
 
-Some of [my personal docs are here](https://sts10.github.io/docs/cargo-dist-tips.html); but basically, `cargo install cargo-dist`. When you're ready to cut a new release, test the current state of the project with `cargo dist build` and `cargo dist plan`. If that went well, create a new git tag that matches the current project version in `Cargo.toml` with `git tag vX.X.X`. Finally, run `git push --tags` to kick off the release process. GitHub will handle it from here -- check [this repository's Releases page](https://github.com/sts10/fgift/releases) about 5 to 10 minutes after running `git push --tags` locally.
+Some of [my personal docs on how to use cargo-dist are here](https://sts10.github.io/docs/cargo-dist-tips.html); but basically, `cargo install cargo-dist`. When you're ready to cut a new release, test the current state of the project with `cargo dist build` and `cargo dist plan`. If that went well, create a new git tag that matches the current project version in `Cargo.toml` with `git tag vX.X.X`. Finally, run `git push --tags` to kick off the release process. GitHub will handle it from here -- check [this repository's Releases page](https://github.com/sts10/fgift/releases) about 5 to 10 minutes after running `git push --tags` locally.
