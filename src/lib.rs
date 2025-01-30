@@ -1,5 +1,6 @@
 pub mod reader;
 use rand::prelude::*;
+use rand::rng;
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
@@ -100,11 +101,10 @@ fn find_receiver_for(
     existing_assignment_pairs: &[Assignment],
     previous_years_giving: &[String],
 ) -> Option<Person> {
-    let mut rng = thread_rng();
+    let mut rng = rng();
     let mut potential_receiver: &Person;
 
     for _n in 0..1000 {
-        // potential_receiver = persons[rng.gen_range(0..persons.len())].clone();
         potential_receiver = match persons.choose(&mut rng) {
             Some(person) => person,
             // Something is wrong, maybe persons is empty
@@ -174,7 +174,7 @@ pub fn make_persons(families: Vec<Vec<String>>) -> Vec<Person> {
 }
 
 pub fn shuffle_persons(mut v: Vec<Person>) -> Vec<Person> {
-    let mut rng = thread_rng();
+    let mut rng = rng();
     v.shuffle(&mut rng);
     v
 }

@@ -1,6 +1,6 @@
 [package]
 name = "fgift"
-version = "0.3.4"
+version = "0.3.5"
 edition = "2021"
 authors = ["Sam Schlinkert <sschlinkert@gmail.com>"]
 license = "MPL-2.0"
@@ -8,7 +8,7 @@ readme = "README.markdown"
 repository = "https://github.com/sts10/fgift"
 
 [dependencies]
-rand = "0.8.5"
+rand = "0.9.0"
 csv = "1.3.0"
 clap = { version = "4.5.4", features = ["derive"] }
 serde = { version = "1.0.203", features = ["derive"] }
