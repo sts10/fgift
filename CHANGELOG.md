@@ -1,3 +1,8 @@
+# v0.3.5
+* 60e29ed - adds dependency checker to readme 
+* a8303e0 - upgrades cargo dist version used to create releases 
+* f7f82e9 - upgrades rand dependency to v0.9.0 
+
 # v0.3.4
 
 * Upgrade clap and serde dependencies
