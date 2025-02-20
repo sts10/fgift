@@ -132,7 +132,7 @@ Both of these optional files should look just like the output text (i.e. "Claire
 For an investigation into how "random" the gift assignments this programs makes, see ["Notes on Randomness" document](./notes-on-randomness.markdown).
 
 ## Goal of longevity
-For personal reasons, one of the goals of this project is for it to work for decades with little to no maintenance. I'm hoping that Rust was a good choice for this, specifically with its "edition" system.
+For personal reasons, one of the goals of this project is for it to work for decades with little to no maintenance. I'm hoping that Rust was a good choice for this, specifically with [its "edition" system](https://doc.rust-lang.org/edition-guide/introduction.html).
 
 Javascript, C++, [Zig](https://ziglang.org/) or even [Hare](https://harelang.org/) would also be interesting choices.
 
