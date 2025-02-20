@@ -1,3 +1,7 @@
+# v0.3.6
+
+* Update project to Rust [Edition 2024](https://blog.rust-lang.org/2025/02/20/Rust-1.85.0.html). 
+
 # v0.3.5
 * 60e29ed - adds dependency checker to readme 
 * a8303e0 - upgrades cargo dist version used to create releases 
