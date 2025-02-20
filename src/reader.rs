@@ -27,7 +27,9 @@ pub fn read_file(names_file: &Path) -> Vec<Vec<String>> {
     {
         read_json(names_file)
     } else {
-        panic!("Unable to detect file type of Names file. This program requires either a .csv or .json file. Check file extension.");
+        panic!(
+            "Unable to detect file type of Names file. This program requires either a .csv or .json file. Check file extension."
+        );
     }
 }
 

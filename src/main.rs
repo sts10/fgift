@@ -68,10 +68,17 @@ fn main() {
                 // Verify that everyone gives and everyone receives.
                 // This line will panic the entire program if assignments fail verification,
                 // which is the desired result in this case.
-                assert!(verify_assignments(&persons, &assignment_pairs), "Was unable to verify that everyone gives and receives. Something wrong with inputs or code.");
+                assert!(
+                    verify_assignments(&persons, &assignment_pairs),
+                    "Was unable to verify that everyone gives and receives. Something wrong with inputs or code."
+                );
                 // If we made it here, we know the assignments were verified as good
                 if opt.verbose >= 1 {
-                    println!("Assignments have been verified ({} persons, {} assignment pairs, and all give and all receive)\n", persons.len(), assignment_pairs.len());
+                    println!(
+                        "Assignments have been verified ({} persons, {} assignment pairs, and all give and all receive)\n",
+                        persons.len(),
+                        assignment_pairs.len()
+                    );
                 }
 
                 // Sort list alphabetically to cover evidence of special requests
@@ -89,7 +96,9 @@ fn main() {
             }
             None => {
                 if opt.verbose >= 2 {
-                    eprintln!("\n------------------\nGot a bad solution. Going to try again\n------------------\n");
+                    eprintln!(
+                        "\n------------------\nGot a bad solution. Going to try again.\n------------------\n"
+                    );
                 }
                 continue;
             }
