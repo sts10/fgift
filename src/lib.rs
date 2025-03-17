@@ -106,7 +106,11 @@ fn find_receiver_for(
     let mut rng = rng();
     let mut potential_receiver: &Person;
 
+    // We're arbitrarily going to try to find a good receiver 1000 times.
+    // If we cannot find a good receiver in 1,000 tries, we very likely have
+    // an impossible situation.
     for _n in 0..1000 {
+        // We could use the ? syntax here, but I appreciate verboseness in this case
         potential_receiver = match persons.choose(&mut rng) {
             Some(person) => person,
             // Something is wrong, maybe persons is empty
@@ -189,10 +193,8 @@ pub fn sort_assignments_alphabetically(mut assignments: Vec<Assignment>) -> Vec<
 
 pub fn read_by_line(file_path: &Path) -> io::Result<Vec<String>> {
     let mut vec = Vec::new();
-    let f = match File::open(file_path) {
-        Ok(res) => res,
-        Err(e) => return Err(e),
-    };
+    let f = File::open(file_path)?;
+
     let file = BufReader::new(&f);
     for line in file.lines() {
         match line {

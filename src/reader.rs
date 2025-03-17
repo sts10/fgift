@@ -15,15 +15,13 @@ pub fn read_file(names_file: &Path) -> Vec<Vec<String>> {
     if names_file
         .extension()
         .expect("Unable to detect file extension of inputted NAMES file")
-        .to_ascii_lowercase()
-        == "csv"
+        .eq_ignore_ascii_case("csv")
     {
         read_csv(names_file)
     } else if names_file
         .extension()
         .expect("Unable to detect file extension of inputted NAMES file")
-        .to_ascii_lowercase()
-        == "json"
+        .eq_ignore_ascii_case("json")
     {
         read_json(names_file)
     } else {
