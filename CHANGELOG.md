@@ -1,5 +1,7 @@
-# v0.3.6
+# v0.3.8
+* Fresh release using new version of cargo-dist (v0.28.2).
 
+# v0.3.6
 * Update project to Rust [Edition 2024](https://blog.rust-lang.org/2025/02/20/Rust-1.85.0.html). 
 
 # v0.3.5
