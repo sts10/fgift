@@ -1,3 +1,6 @@
+# v0.3.9 
+* Fresh release using new version of cargo-dist (v0.30.2).
+
 # v0.3.8
 * Fresh release using new version of cargo-dist (v0.28.2).
 
