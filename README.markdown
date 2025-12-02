@@ -134,7 +134,7 @@ For an investigation into how "random" the gift assignments this programs makes,
 ## Goal of longevity
 For personal reasons, one of the goals of this project is for it to work for decades with little to no maintenance. I'm hoping that Rust was a good choice for this, specifically with [its "edition" system](https://doc.rust-lang.org/edition-guide/introduction.html).
 
-Javascript, C++, [Zig](https://ziglang.org/) or even [Hare](https://harelang.org/) would also be interesting choices.
+Python, Javascript, C++, [Zig](https://ziglang.org/) or even [Hare](https://harelang.org/) would also be interesting choices.
 
 ## For developers: How to create a release of FGift
 This project uses [cargo-dist](https://opensource.axo.dev/cargo-dist/) (sometimes known as simply "dist") to create releases. 
