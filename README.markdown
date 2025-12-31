@@ -1,7 +1,7 @@
 # FGift: Family Gift List Maker
 [![](https://deps.rs/repo/github/sts10/fgift/status.svg)](https://deps.rs/repo/github/sts10/fgift)
 
-This is a command-line tool that takes an input of a CSV or JSON file, describing an (extended) family, with each line an immediate family. It outputs a list of who should give to who, ensuring that no one gives to anyone in their immediate family, but otherwise selecting randomly. One common use-case for this would be where you need to create "Secret Santa" give assignments.
+This is a command-line tool that takes an input of a CSV or JSON file, describing an (extended) family, in which each line represents an immediate family. It outputs a list of who should give to who, ensuring that no one gives to anyone in their immediate family, but otherwise selecting randomly. One common use-case for this would be where you need to create "Secret Santa" give assignments.
 
 Obviously you can substitute the concept of "families" for any small groups of people, such as teams at your workplace.
 
